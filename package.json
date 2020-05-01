@@ -1,0 +1,38 @@
+{
+  "name": "next-b2p",
+  "version": "1.0.0",
+  "scripts": {
+    "1": "yarn rimraf .next && yarn concurrently \"yarn dev\" \"yarn 2\"",
+    "2": "yarn css-watch",
+    "css-watch": "yarn tsm  \"**/*.module.scss\" --ignore \"**/node_modules\" --watch",
+    "css": "yarn tsm  \"**/*.module.scss\" --ignore \"**/node_modules\"",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "type-check": "tsc"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.149",
+    "@zeit/next-sass": "^1.0.1",
+    "concurrently": "^5.1.0",
+    "fast-random": "^2.0.4",
+    "isomorphic-unfetch": "3.0.0",
+    "lodash": "^4.17.15",
+    "next": "^9.3.5",
+    "node-sass": "^4.13.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "13.11.1",
+    "@types/react": "16.9.34",
+    "@types/react-dom": "16.9.6",
+    "husky": "4.2.5",
+    "prettier": "2.0.4",
+    "pretty-quick": "^2.0.1",
+    "typed-scss-modules": "1.3.0",
+    "typescript": "3.8.3"
+  },
+  "license": "UNLICENSED"
+}
