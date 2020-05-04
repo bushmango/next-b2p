@@ -1,5 +1,7 @@
 import * as express from 'express'
 import { checkToken, IUser } from '../apiAccount'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { l } from '../../common/lib/lodash'
 
 export function auth(
   req: express.Request,
@@ -31,100 +33,109 @@ export function auth(
   return user
 }
 
-export function post(
-  app: express.Express,
-  url: string,
-  action: (req: express.Request, res: express.Response) => Promise<any>,
+// export function post(
+//   app: express.Express,
+//   url: string,
+//   action: (req: express.Request, res: express.Response) => Promise<any>,
+// ) {
+//   doPost(app, url, action, { allowAnonymous: false })
+// }
+
+export function postAnonymouslyJson(
+  action: (req: NextApiRequest, res: NextApiResponse) => Promise<any>,
 ) {
-  doPost(app, url, action, { allowAnonymous: false })
+  return async (req: NextApiRequest, res: NextApiResponse) => {
+    await doPost(req, res, action, { allowAnonymous: true })
+  }
 }
 
-export function postAnonymously(
-  app: express.Express,
-  url: string,
-  action: (req: express.Request, res: express.Response) => Promise<any>,
-) {
-  doPost(app, url, action, { allowAnonymous: true })
-}
-
-function doPost(
-  app: express.Express,
-  url: string,
-  action: (req: express.Request, res: express.Response) => Promise<any>,
+async function doPost(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  action: (req: NextApiRequest, res: NextApiResponse) => Promise<any>,
   options: { allowAnonymous: boolean },
 ) {
-  app.post(url, async (req, res) => {
-    if (!options.allowAnonymous) {
-      res.locals.user = auth(req, res)
-      if (!res.locals.user) {
-        return
-      }
-    }
-    try {
-      let result = await action(req, res)
+  if (req.method !== 'POST') {
+    // Handle any other HTTP method
+    console.log('not-post')
+    // res.status(200)
+    res.send('not-allowed')
+  }
 
-      if (result && result.error) {
-        res.json(
-          _.assign(
-            {
-              isError: true,
-            },
-            result,
-          ),
-        )
-      }
-
+  if (!options.allowAnonymous) {
+    // TODO: make sure we are logged in !!!
+    // res.locals.user = auth(req, res)
+    // if (!res.locals.user) {
+    //   return
+    // }
+  }
+  try {
+    let result = await action(req, res)
+    if (!result || result.error) {
+      console.log('error')
+      res.status(200)
       res.json(
-        _.assign(
+        l.assign(
+          {
+            isError: true,
+          },
+          result || {},
+        ),
+      )
+    } else {
+      res.status(200)
+      res.json(
+        l.assign(
           {
             isSuccess: true,
           },
           result,
         ),
       )
-    } catch (err) {
-      res.json({
-        isError: true,
-        error: err,
-        errorType: 'uncaught-exception',
-      })
     }
-  })
+  } catch (err) {
+    res.status(200)
+    res.json({
+      isError: true,
+      error: err,
+      errorType: 'uncaught-exception',
+    })
+  }
 }
 
-export function getTextFile(
-  app: express.Express,
-  url: string,
-  action: (req: express.Request, res: express.Response) => Promise<any>,
-) {
-  doGetTextFile(app, url, action, { allowAnonymous: false })
-}
-function doGetTextFile(
-  app: express.Express,
-  url: string,
-  action: (req: express.Request, res: express.Response) => Promise<any>,
-  options: { allowAnonymous: boolean },
-) {
-  app.get(url, async (req, res) => {
-    if (!options.allowAnonymous) {
-      res.locals.user = auth(req, res)
-      if (!res.locals.user) {
-        return
-      }
-    }
-    try {
-      let result = await action(req, res)
-      res.end(result)
-    } catch (err) {
-      res.json({
-        isError: true,
-        error: err,
-        errorType: 'uncaught-exception',
-      })
-    }
-  })
-}
+// export function getTextFile(
+//   app: express.Express,
+//   url: string,
+//   action: (req: express.Request, res: express.Response) => Promise<any>,
+// ) {
+//   doGetTextFile(app, url, action, { allowAnonymous: false })
+// }
+// function doGetTextFile(
+//   app: express.Express,
+//   url: string,
+//   action: (req: express.Request, res: express.Response) => Promise<any>,
+//   options: { allowAnonymous: boolean },
+// ) {
+//   app.get(url, async (req, res) => {
+//     if (!options.allowAnonymous) {
+//       res.locals.user = auth(req, res)
+//       if (!res.locals.user) {
+//         return
+//       }
+//     }
+//     try {
+//       let result = await action(req, res)
+//       res.end(result)
+//     } catch (err) {
+//       res.json({
+//         isError: true,
+//         error: err,
+//         errorType: 'uncaught-exception',
+//       })
+//     }
+//   })
+// }
 
-export function ping(app: express.Express, url: string) {
-  app.get(url, (_, res) => res.send('pong:' + url))
-}
+// export function ping(app: express.Express, url: string) {
+//   app.get(url, (_, res) => res.send('pong:' + url))
+// }

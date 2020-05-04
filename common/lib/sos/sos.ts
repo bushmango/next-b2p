@@ -1,10 +1,9 @@
 import React from 'react'
 import { browser } from '../browser/browser-sidecar'
+import { deepFreeze } from '../deepFreeze'
 import { l } from '../lodash'
 import { logInfo, logWarn } from '../log'
 import { r } from '../ramda'
-import { deepFreeze } from '../deepFreeze'
-import { useSubscribe } from '../../../components/account/sosUser'
 const namespace = 'sos'
 
 // TODO:
@@ -130,7 +129,7 @@ export const createSos2 = <T>(
     if (browser.localStorageExists) {
       let state = getState()
       let toSave: any = {}
-      let keys = r.keys(meta)
+      let keys = r.keys(meta) as any
       r.forEach((k: string) => {
         let v: IStateMeta<any> = (meta as any)[k] as IStateMeta<any>
         if (v.localStorage) {

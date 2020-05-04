@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react'
 import giphyApi from 'giphy-api'
 const giphy = giphyApi({ https: true })
 import classes from './Giphy.module.scss'
-//import { _ } from '@/common/imports'
-import split from 'lodash/split'
-import sample from 'lodash/sample'
+import { l } from '../../lib/lodash'
 
 export const Giphy = (props: { tag: string }) => {
   let [data, setData] = useState<any>(null)
   let [tag, setTag] = useState<any>('')
 
   useEffect(() => {
-    let tags = split(props.tag, ',')
-    let tag = sample(tags)
+    let tags = l.split(props.tag, ',')
+    let tag = l.sample(tags) || ''
     setTag(tag)
     giphy
       .random({
