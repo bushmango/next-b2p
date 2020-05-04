@@ -1,12 +1,12 @@
-import { Button } from '@/common/components/button'
-import { Giphy } from '@/common/components/giphy/Giphy'
-import { Input } from '@/common/components/input'
-import { sosUser } from '@/state'
-import { IStateUser } from '@/state/sosUser'
 import Head from 'next/head'
 import React from 'react'
 import { NewsBox } from '../news/NewsBox'
 import { Layout } from '../Layout'
+import { Button } from '../../common/components/button/Button-sidecar'
+import { Giphy } from '../../common/components/giphy/Giphy-sidecar'
+import { Input } from '../../common/components/input/Input-sidecar'
+import { sosUser } from '../account/sosUser-sidecar'
+import { IStateUser } from '../account/sosUser'
 
 export const LoginPage = () => {
   let state = sosUser.useSubscribe()

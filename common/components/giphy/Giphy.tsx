@@ -20,7 +20,7 @@ export const Giphy = (props: { tag: string }) => {
         rating: 'pg',
         fmt: 'json',
       })
-      .then((res) => {
+      .then((res: any) => {
         setData(res.data)
       })
   }, [props.tag])

@@ -1,0 +1,31 @@
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+@mixin noTextSelect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin focusHighlight() {
+  @include focusHighlightNormal();
+
+  &:focus {
+    @include focusHighlightFocused();
+  }
+}
+
+@mixin focusHighlightNormal() {
+  @include transition(box-shadow 0.25s ease);
+  outline: none;
+}
+@mixin focusHighlightFocused() {
+  @include transition(box-shadow 0.25s ease);
+  box-shadow: 0 0 3px #1955a6;
+}

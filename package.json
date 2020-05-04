@@ -19,7 +19,7 @@
     "concurrently": "5.2.0",
     "fast-random": "^2.0.4",
     "giphy-api": "^2.0.1",
-    "isomorphic-unfetch": "3.0.0",
+    "isomorphic-unfetch": "^3.0.0",
     "lodash": "^4.17.15",
     "next": "9.3.6",
     "node-sass": "4.14.0",

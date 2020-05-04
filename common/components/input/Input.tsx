@@ -17,7 +17,7 @@ export type InputAutocompleteType =
   | 'username'
 
 let timeoutId = 0
-const setupDebounce = (cb, delay: number = 1000) => {
+const setupDebounce = (cb: any, delay: number = 1000) => {
   clearDebounce()
   timeoutId = setTimeout(cb, delay) as any
 }
@@ -34,8 +34,8 @@ export const Input = forwardRef(
       value?: string
       onChange?: (newVal: string) => void
       onChangeImmediate?: (newVal: string) => void
-      onFocus?: (ref) => void
-      onBlur?: (ref) => void
+      onFocus?: (ref: any) => void
+      onBlur?: (ref: any) => void
       onEnter?: (newVal: string) => void
       onKeyDown?: (
         event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,

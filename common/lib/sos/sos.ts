@@ -4,6 +4,7 @@ import { l } from '../lodash'
 import { logInfo, logWarn } from '../log'
 import { r } from '../ramda'
 import { deepFreeze } from '../deepFreeze'
+import { useSubscribe } from '../../../components/account/sosUser'
 const namespace = 'sos'
 
 // TODO:
@@ -266,4 +267,8 @@ export function useSubscription<T>(sos2: ISos2<T>) {
   }, [sos2])
 
   return state
+}
+
+export const createUseSubscribe = <T>(getSos: LazySos2Type<T>) => {
+  return () => useSubscription(getSos())
 }
