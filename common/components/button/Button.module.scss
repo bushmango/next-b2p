@@ -1,0 +1,35 @@
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+@mixin button($color, $textColor) {
+  cursor: pointer;
+
+  @include transition(color 0.2s ease);
+  @include transition(background-color 0.2s ease);
+  background-color: $color;
+
+  color: $textColor;
+
+  &:hover {
+    background-color: darken($color, 10%);
+    color: darken($textColor, 20%);
+  }
+  &:active {
+    background-color: darken($color, 20%);
+    color: darken($textColor, 30%);
+  }
+}
+
+.button {
+  border: solid 1px #999;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 5px;
+
+  @include button(#ccc, black);
+}

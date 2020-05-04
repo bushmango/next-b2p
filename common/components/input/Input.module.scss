@@ -1,0 +1,37 @@
+@import '../../css/mixins.scss';
+
+.inputText {
+  margin: 0;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #aaa;
+  border-radius: 3px;
+
+  min-height: 23px;
+  width: 100%;
+  box-sizing: border-box;
+
+  outline: none;
+
+  @include focusHighlight();
+
+  &.notResizable {
+    resize: none;
+  }
+
+  &.borderless {
+    border: none;
+    resize: none;
+    min-height: 21px;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  &.readOnly {
+    border: none;
+    &:focus {
+      outline: none;
+    }
+  }
+}
