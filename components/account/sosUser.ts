@@ -1,6 +1,7 @@
 import { apiRequest } from '../../common/lib/request/apiRequest-sidecar'
 import { IApiRequestState } from '../../common/lib/request/apiRequestState'
 import { sos } from '../../common/lib/sos/sos-sidecar'
+import Router from 'next/router'
 
 export interface IStateUser {
   username: string
@@ -63,9 +64,11 @@ export async function login() {
           ds.token = r.response.token
 
           apiRequest.setAuth(r.response.token, r.response.username)
-          // setTimeout(() => {
-          //   route.navTo('/people/search')
-          // }, 1)
+
+          setTimeout(() => {
+            //   route.navTo('/people/search')
+            Router.push('/people/search')
+          }, 1)
           getSos().change((ds) => {
             ds.password = ''
           })

@@ -1,5 +1,6 @@
 import { postAnonymouslyJson } from './lib/apiUtil'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { l } from '../common/lib/lodash'
 
 export interface IUser {
   organization: string
@@ -82,7 +83,7 @@ export async function loginTest(req: NextApiRequest, res: NextApiResponse) {
 export function postAnonJson(
   req: NextApiRequest,
   res: NextApiResponse,
-  doIt: (req: NextApiRequest) => any,
+  action: (req: NextApiRequest) => any,
 ) {
   if (req.method !== 'POST') {
     res.status(200)
@@ -91,11 +92,34 @@ export function postAnonJson(
   }
 
   try {
-    let result = doIt(req)
+    let result = action(req)
+
+    if (!result || result.error) {
+      res.status(200)
+      res.json(
+        l.assign(
+          {
+            isError: true,
+          },
+          result || {},
+        ),
+      )
+    } else {
+      res.status(200)
+      res.json(
+        l.assign(
+          {
+            isSuccess: true,
+          },
+          result,
+        ),
+      )
+    }
+
     res.json(result)
   } catch (err) {
     console.log(err)
-    res.json({ error: 'unhandled-error' })
+    res.json({ isError: true, error: 'unhandled-error' })
   }
 }
 

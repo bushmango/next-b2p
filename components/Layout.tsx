@@ -17,16 +17,12 @@ export const Layout = (props: { children: React.ReactNode; title: string }) => {
           <a>Home</a>
         </Link>{' '}
         |{' '}
-        <Link href='/rebreather'>
-          <a>Rebreather</a>
+        <Link href='/login'>
+          <a>Login</a>
         </Link>{' '}
         |{' '}
-        <Link href='/game-of-life'>
-          <a>Game of Life</a>
-        </Link>{' '}
-        |{' '}
-        <Link href='/game-of-life-classic'>
-          <a>Game of Life Classic</a>
+        <Link href='/people/search'>
+          <a>People Search</a>
         </Link>
       </div>
       {props.children}
