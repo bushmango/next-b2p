@@ -15,13 +15,13 @@ export function checkToken(token: string): IUser | null {
   // return { organization: user.org }
 
   if (token === LGBTB2P_TOKEN) {
-    return { organization: 'LGBTB2P' }
+    return { organization: 'madison-lgbt-b2p' }
   }
   return null
 }
 
 export async function login(req: NextApiRequest, res: NextApiResponse) {
-  return postAnonJson(req, res, (req) => {
+  return postAnonJson(req, res, async (req) => {
     const { username, password } = req.body
     if (!username) {
       return { error: 'no-username' }

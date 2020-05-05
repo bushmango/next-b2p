@@ -1,16 +1,14 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { postJson } from "./lib/apiUtil"
+import { NextApiRequest, NextApiResponse } from 'next'
+import { postJson } from './lib/apiUtil'
+import { db } from './lib/databaseB2P'
 
 export async function count(req: NextApiRequest, res: NextApiResponse) {
-  return postJson(req, res, (req, user) => {
+  return postJson(req, res, async (req, user) => {
     let { showDeleted } = req.body
     let organization = user?.organization
 
     const table = 'b2p_people_v5'
-    let query = db
-      .from(table)
-      .select()
-      .where({ organization })
+    let query = db.from(table).select().where({ organization })
 
     if (!showDeleted) {
       query.where('deleted', false)
@@ -19,7 +17,7 @@ export async function count(req: NextApiRequest, res: NextApiResponse) {
 
     return { count: results[0].count }
   })
-  })
+}
 
 // import { _ } from '@/common/lib/lodash'
 // import * as express from 'express'

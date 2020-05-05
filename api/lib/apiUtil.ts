@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { checkToken, IUser } from '../apiAccount'
 import { l } from '../../common/lib/lodash'
 
-export function postJson(
+export async function postJson(
   req: NextApiRequest,
   res: NextApiResponse,
-  action: (req: NextApiRequest, user?: IUser | null) => any,
+  action: (req: NextApiRequest, user?: IUser | null) => Promise<any>,
 ) {
   if (req.method !== 'POST') {
     res.status(200)
@@ -22,13 +22,13 @@ export function postJson(
     return
   }
 
-  return actionJson(req, res, action, user)
+  return await actionJson(req, res, action, user)
 }
 
-export function postAnonJson(
+export async function postAnonJson(
   req: NextApiRequest,
   res: NextApiResponse,
-  action: (req: NextApiRequest, user?: IUser | null) => any,
+  action: (req: NextApiRequest, user?: IUser | null) => Promise<any>,
 ) {
   if (req.method !== 'POST') {
     res.status(200)
@@ -36,17 +36,17 @@ export function postAnonJson(
     return
   }
 
-  return actionJson(req, res, action, null)
+  return await actionJson(req, res, action, null)
 }
 
-export function actionJson(
+export async function actionJson(
   req: NextApiRequest,
   res: NextApiResponse,
-  action: (req: NextApiRequest, user?: IUser | null) => any,
+  action: (req: NextApiRequest, user?: IUser | null) => Promise<any>,
   user: IUser | null,
 ) {
   try {
-    let result = action(req, user)
+    let result = await action(req, user)
 
     if (!result || result.error) {
       res.status(200)
