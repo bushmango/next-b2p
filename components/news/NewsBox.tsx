@@ -14,7 +14,7 @@ export const NewsBox = () => {
       <div style={{ fontSize: '1.5em' }}>News / changelog</div>
 
       {/* <div>Build: {buildDateTime}</div> */}
-      <div>Version 6 -- Move to NextJS Clout</div>
+      <div>Version 6 -- Move to NextJS Cloud</div>
       <div>
         Version 5 -- Cloud + Multi-tenant support
         <ul>
