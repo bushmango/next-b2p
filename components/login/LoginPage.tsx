@@ -30,6 +30,8 @@ export const Logout = (props: { state: IStateUser }) => {
   }
   return (
     <div>
+      <div>Currently logged in as: {state.username}</div>
+
       <Button
         onClick={() => {
           sosUser.logout()
@@ -68,19 +70,20 @@ export const Login = (props: { state: IStateUser }) => {
         <div>
           Password:
           <Input
-            // autoComplete='current-password'
+            autoComplete='current-password'
             inputType='password'
-            // value={state.password}
+            value={state.password}
             onChange={(newVal) => {
+              console.log('merp')
               sosUser.updateForm({ password: newVal })
             }}
           />
-          <input
+          {/* <input
             type='hidden'
             name='password'
             autoComplete='current-password'
             value={state.password}
-          />
+          /> */}
         </div>
         <div>
           <Button

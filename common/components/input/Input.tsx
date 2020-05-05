@@ -13,6 +13,7 @@ export type InputAutocompleteType =
   | 'name'
   | 'email'
   | 'new-password'
+  | 'current-password'
   | 'off'
   | 'username'
 
