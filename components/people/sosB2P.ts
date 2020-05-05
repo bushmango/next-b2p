@@ -41,7 +41,7 @@ export interface IStateB2P {
   editPerson: any
   editNewBook: INewBook
 
-  requestBookSearch: IApiRequestState<{ params: any }>
+  requestBookSearch: IApiRequestState<{ params: any; data: any }>
   bookSearchText: string
   printDate: string
 }

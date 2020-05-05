@@ -1,0 +1,86 @@
+@media print {
+  .printable {
+    display: block;
+  }
+  .notPrintable {
+    display: none;
+  }
+}
+@media screen {
+  .printable {
+    display: block;
+  }
+  .notPrintable {
+    display: block;
+  }
+}
+
+.printLayout {
+  position: relative;
+}
+@media print {
+  .printLayout {
+    font-size: 90%;
+    transform: scale(0.95);
+    border: none;
+    height: 7.5in;
+    width: 5in;
+  }
+}
+@media screen {
+  .printLayout {
+    border: solid 1px #ccc;
+    border-radius: 3px;
+    // margin: 20px;
+    height: 8in;
+    width: 10in;
+    display: none;
+  }
+}
+.printItem {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+@media screen {
+  .printItem {
+    padding: 0.25in;
+  }
+}
+
+.mediaMail {
+  font-size: 130%;
+  margin-left: 30px;
+  color: darken(red, 20%);
+  transform: rotate(45deg);
+  opacity: 1;
+}
+.logo {
+  width: 0.75in;
+  height: auto;
+  display: block;
+}
+.tablePacking {
+  margin: 20px;
+  margin-left: 0px;
+  th {
+    text-align: right;
+    font-weight: normal;
+    min-width: 1in;
+  }
+  td {
+    padding: 10px;
+  }
+}
+.tableItems {
+  border: solid 1px gray;
+  width: 5in;
+  min-height: 2.5in;
+  table {
+    width: 100%;
+  }
+  th {
+    background-color: gray;
+    font-weight: bold;
+  }
+}

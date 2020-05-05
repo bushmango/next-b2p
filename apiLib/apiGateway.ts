@@ -6,4 +6,5 @@ export function registerAll() {
   apiRegister('/account/login', apiAccount.login)
   apiRegister('/people/count', apiPeople.count)
   apiRegister('/people/search', apiPeople.search)
+  apiRegister('/people/get', apiPeople.get)
 }

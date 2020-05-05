@@ -2,4 +2,5 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-export * from './search/PeopleSearch'
+import * as PeopleSearchPage copy from './PeopleSearchPage copy'
+export { PeopleSearchPage copy }

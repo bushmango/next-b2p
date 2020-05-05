@@ -2,4 +2,5 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-export * from './search/PeopleSearch'
+import * as AddBook from './AddBook'
+export { AddBook }

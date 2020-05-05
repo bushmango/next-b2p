@@ -1,0 +1,31 @@
+.card {
+  display: inline-block;
+  background-color: #fff;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+  box-shadow: 2px 2px 1px darken(lightgrey, 10%);
+
+  margin: 5px;
+  padding: 5px;
+
+  &.inset {
+    padding: 0;
+  }
+
+  .title {
+    font-size: 18px;
+
+    padding: 3px 3px;
+    padding-bottom: 0px;
+    color: gray;
+
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    height: 25px;
+
+    &.bordered {
+      border-bottom: solid 1px lightgray;
+      margin-bottom: 6px;
+    }
+  }
+}

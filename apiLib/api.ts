@@ -43,7 +43,7 @@ export async function gateway(req: NextApiRequest, res: NextApiResponse) {
 
   let pathAction = paths[path]
   if (!pathAction) {
-    res.status(200)
+    res.status(404)
     res.send('404')
     return
   }

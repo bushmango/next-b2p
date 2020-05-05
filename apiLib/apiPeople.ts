@@ -57,6 +57,30 @@ export async function search(req: NextApiRequest, res: NextApiResponse) {
   })
 }
 
+export async function get(req: NextApiRequest, res: NextApiResponse) {
+  return postJson(req, res, async (req, user) => {
+    let guid = apiArguments.getArgumentString(req, 'guid')
+    let organization = user?.organization
+
+    let results = await db.from(table).select().where({ organization, guid })
+
+    return { record: results[0] }
+  })
+}
+
+//   post(app, '/api/people/get', async (req, res) => {
+//     let { guid } = req.body
+//     let organization = res.locals.user.organization
+
+//     const table = 'b2p_people_v5'
+//     let results = await db
+//       .from(table)
+//       .select()
+//       .where({ organization, guid })
+
+//     return { record: results[0] }
+//   })
+
 // import { _ } from '@/common/lib/lodash'
 // import * as express from 'express'
 
@@ -73,19 +97,6 @@ export async function search(req: NextApiRequest, res: NextApiResponse) {
 //     const { skip, limit } = req.body
 //     let numProcessed = await rebuildSearchIndex(skip, limit)
 //     return { message: 'built-index', skip, limit, numProcessed }
-//   })
-
-//   post(app, '/api/people/get', async (req, res) => {
-//     let { guid } = req.body
-//     let organization = res.locals.user.organization
-
-//     const table = 'b2p_people_v5'
-//     let results = await db
-//       .from(table)
-//       .select()
-//       .where({ organization, guid })
-
-//     return { record: results[0] }
 //   })
 
 //   post(app, '/api/people/add', async (req, res) => {

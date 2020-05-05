@@ -74,14 +74,17 @@ export async function request<T>(
     data,
   )
   try {
-    let result = await doFetch('/api/api', {
-      //url, {
-      method,
-      body: method === 'POST' ? JSON.stringify(data) : undefined,
-      headers: {
-        'Content-Type': 'application/json',
+    let result = await doFetch(
+      '/api/api?p=' + encodeURIComponent(url.replace(/\//g, '-')),
+      {
+        //url, {
+        method,
+        body: method === 'POST' ? JSON.stringify(data) : undefined,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
 
     if (result.ok) {
       let json = await result.json()
