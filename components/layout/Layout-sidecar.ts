@@ -2,4 +2,4 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-export * from './layout/Layout'
+export * from './Layout'

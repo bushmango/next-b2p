@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 import { sosUser } from '../../account/sosUser-sidecar'
-import { Layout } from '../../Layout'
+import { Layout } from '../../layout/Layout'
 import { PeopleSearch } from '../PeopleSearch-sidecar'
 
 export const PeopleSearchPage = () => {

@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import * as React from 'react'
-import { Layout } from '../components/Layout'
+import { Layout } from '../components/layout/Layout'
 
 const IndexPage: NextPage = () => {
   return (

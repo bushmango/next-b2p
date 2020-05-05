@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 import { NewsBox } from '../news/NewsBox'
-import { Layout } from '../Layout'
+import { Layout } from '../layout/Layout'
 import { Button } from '../../common/components/button/Button-sidecar'
 import { Giphy } from '../../common/components/giphy/Giphy-sidecar'
 import { Input } from '../../common/components/input/Input-sidecar'
