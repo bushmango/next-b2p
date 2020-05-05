@@ -69,8 +69,6 @@ export async function actionJson(
         ),
       )
     }
-
-    res.json(result)
   } catch (err) {
     console.log(err)
     res.json({ isError: true, error: 'unhandled-error' })

@@ -68,9 +68,14 @@ export async function request<T>(
     throw new Error(`url must start with /api/ ${url}`)
   }
 
-  data = l.assign({}, { token: authToken, username: authUsername }, data)
+  data = l.assign(
+    {},
+    { token: authToken, username: authUsername, path: url },
+    data,
+  )
   try {
-    let result = await doFetch(url, {
+    let result = await doFetch('/api/api', {
+      //url, {
       method,
       body: method === 'POST' ? JSON.stringify(data) : undefined,
       headers: {

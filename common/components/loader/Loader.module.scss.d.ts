@@ -1,10 +1,2 @@
-export interface Styles {
-  'infiniteLoader': string;
-  'infiniteLoaderBar': string;
-}
-
-export type ClassNames = keyof Styles;
-
-declare const styles: Styles;
-
-export default styles;
+export const infiniteLoader: string;
+export const infiniteLoaderBar: string;

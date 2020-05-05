@@ -2,4 +2,5 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-export * from './api'
+import * as apiGateway from './apiGateway'
+export { apiGateway }
