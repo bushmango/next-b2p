@@ -13,6 +13,10 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-regular-svg-icons": "^5.13.0",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
     "@types/giphy-api": "^2.0.2",
     "@types/lodash": "4.14.150",
     "@types/luxon": "^1.22.0",

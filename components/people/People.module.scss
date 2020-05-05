@@ -1,0 +1,46 @@
+.layout {
+  display: flex;
+}
+
+.toolbarLayout {
+  display: flex;
+  align-items: center;
+}
+.toolbarItem {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.quickPriceLayout {
+  display: flex;
+  justify-content: space-around;
+}
+.quickPriceItem {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.iconButton {
+  cursor: pointer;
+}
+
+.packageSeparator {
+  height: 1px;
+  border-top: solid 1px blue;
+}
+
+.bookSearchResult {
+  border: solid 1px blue;
+  border-radius: 3px;
+  margin: 5px;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.bookSearchThumbnail {
+  max-height: 80px;
+  width: auto;
+  margin-left: 10px;
+}

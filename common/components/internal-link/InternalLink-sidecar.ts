@@ -2,5 +2,4 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-import * as route from './urls'
-export { route }
+export * from './InternalLink'

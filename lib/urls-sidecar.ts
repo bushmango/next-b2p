@@ -2,5 +2,5 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-import * as route from './urls'
-export { route }
+import * as urls from './urls'
+export { urls }

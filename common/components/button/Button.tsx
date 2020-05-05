@@ -1,6 +1,6 @@
 import React from 'react'
 
-import classes from './Button.module.scss'
+import css from './Button.module.scss'
 
 export const Button = (props: {
   children: React.ReactNode
@@ -9,7 +9,7 @@ export const Button = (props: {
 }) => {
   return (
     <button
-      className={classes.button}
+      className={css.button}
       onClick={props.onClick}
       type={props.submit ? 'submit' : 'button'}
     >
