@@ -1,13 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { postJson } from './lib/apiUtil'
 import { db } from './lib/databaseB2P'
+import { apiArguments } from './lib/apiArguments-sidecar'
+import l from 'lodash'
+
+const table = 'b2p_people_v5'
 
 export async function count(req: NextApiRequest, res: NextApiResponse) {
   return postJson(req, res, async (req, user) => {
-    let { showDeleted } = req.body
+    // let args = apiArguments.getArguments<{}, { showDeleted: boolean }>()
+
+    let showDeleted = apiArguments.getArgumentBoolean(req, 'showDeleted')
     let organization = user?.organization
 
-    const table = 'b2p_people_v5'
     let query = db.from(table).select().where({ organization })
 
     if (!showDeleted) {
@@ -16,6 +21,41 @@ export async function count(req: NextApiRequest, res: NextApiResponse) {
     let results = await query.count()
 
     return { count: results[0].count }
+  })
+}
+
+export async function search(req: NextApiRequest, res: NextApiResponse) {
+  return postJson(req, res, async (req, user) => {
+    let showDeleted = apiArguments.getArgumentBoolean(req, 'showDeleted')
+    let search = apiArguments.getArgumentString(req, 'search')
+    let limit = apiArguments.getArgumentInteger(req, 'limit')
+
+    search = search.toLowerCase()
+    limit = limit || 25
+    let organization = user?.organization
+
+    let searchParts = ('' + search).split(' ', 25)
+    searchParts = l.filter(searchParts, (c) => !l.isNil(c) && c !== '')
+
+    let query = db
+      .from(table)
+      .select()
+      .where({ organization })
+      .orderBy('id')
+      .limit(limit)
+    if (!showDeleted) {
+      query.where('deleted', false)
+    }
+    l.forEach(searchParts, (c) => {
+      query = query.where('search', 'like', '%' + c + '%')
+    })
+
+    let results = await query
+    return {
+      num: results.length,
+      search: search,
+      records: l.map(results, (c) => c),
+    }
   })
 }
 
@@ -35,59 +75,6 @@ export async function count(req: NextApiRequest, res: NextApiResponse) {
 //     const { skip, limit } = req.body
 //     let numProcessed = await rebuildSearchIndex(skip, limit)
 //     return { message: 'built-index', skip, limit, numProcessed }
-//   })
-
-//   post(app, '/api/people/search', async (req, res) => {
-//     let { search, limit, showDeleted } = req.body
-//     search = search.toLowerCase()
-//     limit = limit || 25
-
-//     let organization = res.locals.user.organization
-
-//     let searchParts = ('' + search).split(' ', 25)
-//     searchParts = _.filter(searchParts, (c) => c) as string[]
-
-//     const table = 'b2p_people_v5'
-//     let query = db
-//       .from(table)
-//       .select()
-//       .where({ organization })
-//       .orderBy('id')
-//       .limit(limit)
-//     if (!showDeleted) {
-//       query.where('deleted', false)
-//     }
-
-//     _.forEach(searchParts, (c) => {
-//       query = query.where('search', 'like', '%' + c + '%')
-//       // console.log(c)
-//     })
-//     // console.log(query.toSQL())
-
-//     let results = await query
-//     return {
-//       num: results.length,
-//       search: search,
-//       records: _.map(results, (c) => c),
-//     }
-//   })
-
-//   post(app, '/api/people/count', async (req, res) => {
-//     let { showDeleted } = req.body
-//     let organization = res.locals.user.organization
-
-//     const table = 'b2p_people_v5'
-//     let query = db
-//       .from(table)
-//       .select()
-//       .where({ organization })
-
-//     if (!showDeleted) {
-//       query.where('deleted', false)
-//     }
-//     let results = await query.count()
-
-//     return { count: results[0].count }
 //   })
 
 //   post(app, '/api/people/get', async (req, res) => {
