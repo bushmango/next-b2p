@@ -8,8 +8,6 @@ const table = 'b2p_people_v5'
 
 export async function count(req: NextApiRequest, res: NextApiResponse) {
   return postJson(req, res, async (req, user) => {
-    // let args = apiArguments.getArguments<{}, { showDeleted: boolean }>()
-
     let showDeleted = apiArguments.getArgumentBoolean(req, 'showDeleted')
     let organization = user?.organization
 

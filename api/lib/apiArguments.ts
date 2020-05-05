@@ -1,13 +1,5 @@
-import { Union } from 'knex'
 import { NextApiRequest } from 'next'
-import { checkToken } from '../apiAccount'
-import { actionJson } from './apiUtil'
 import { l } from '../../common/lib/lodash'
-
-// export function getArguments<T, K>(req: NextApiRequest): T | K {
-
-//   return await actionJson(req, res, action, user)
-// }
 
 export function getArgumentBoolean(req: NextApiRequest, key: string): boolean {
   let arg = req.body[key] as string | null | undefined | boolean
