@@ -1,6 +1,5 @@
-import { postAnonymouslyJson } from './lib/apiUtil'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { l } from '../common/lib/lodash'
+import { postAnonJson } from './lib/apiUtil'
 
 export interface IUser {
   organization: string
@@ -21,7 +20,7 @@ export function checkToken(token: string): IUser | null {
   return null
 }
 
-export async function loginTest(req: NextApiRequest, res: NextApiResponse) {
+export async function login(req: NextApiRequest, res: NextApiResponse) {
   return postAnonJson(req, res, (req) => {
     const { username, password } = req.body
     if (!username) {
@@ -80,67 +79,24 @@ export async function loginTest(req: NextApiRequest, res: NextApiResponse) {
   // }
 }
 
-export function postAnonJson(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  action: (req: NextApiRequest) => any,
-) {
-  if (req.method !== 'POST') {
-    res.status(200)
-    res.send('not-allowed')
-    return
-  }
+// export const login = postAnonymouslyJson(async (req, res) => {
+//   const { username, password } = req.body
+//   username.toLowerCase()
+//   // let user = l.find(
+//   //   secrets.users,
+//   //   (c) => c.un.toLowerCase() === username && c.pw === password,
+//   // )
 
-  try {
-    let result = action(req)
-
-    if (!result || result.error) {
-      res.status(200)
-      res.json(
-        l.assign(
-          {
-            isError: true,
-          },
-          result || {},
-        ),
-      )
-    } else {
-      res.status(200)
-      res.json(
-        l.assign(
-          {
-            isSuccess: true,
-          },
-          result,
-        ),
-      )
-    }
-
-    res.json(result)
-  } catch (err) {
-    console.log(err)
-    res.json({ isError: true, error: 'unhandled-error' })
-  }
-}
-
-export const login = postAnonymouslyJson(async (req, res) => {
-  const { username, password } = req.body
-  username.toLowerCase()
-  // let user = l.find(
-  //   secrets.users,
-  //   (c) => c.un.toLowerCase() === username && c.pw === password,
-  // )
-
-  if (username === LGBTB2P_USERNAME && password === LGBTB2P_PASSWORD) {
-    return {
-      username: LGBTB2P_USERNAME,
-      token: LGBTB2P_TOKEN,
-    }
-  }
-  return {
-    error: 'invalid-credentials',
-  }
-})
+//   if (username === LGBTB2P_USERNAME && password === LGBTB2P_PASSWORD) {
+//     return {
+//       username: LGBTB2P_USERNAME,
+//       token: LGBTB2P_TOKEN,
+//     }
+//   }
+//   return {
+//     error: 'invalid-credentials',
+//   }
+// })
 
 // export function install(app: express.Express) {
 //   ping(app, '/api/account/ping')
