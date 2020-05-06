@@ -1,14 +1,9 @@
 import { NextPage } from 'next'
 import * as React from 'react'
-import { Layout } from '../components/layout/Layout'
+import { HomePage } from '../components/home/HomePage-sidecar'
 
 const IndexPage: NextPage = () => {
-  return (
-    <Layout title='B2P @ StevieBushman'>
-      <h2>B2P test</h2>
-      <div>b2p</div>
-    </Layout>
-  )
+  return <HomePage />
 }
 
 export default IndexPage
