@@ -25,6 +25,14 @@ export function getArgumentString(req: NextApiRequest, key: string): string {
   return arg || ''
 }
 
+export function getArgumentJson(req: NextApiRequest, key: string): any {
+  let arg = req.body[key] as any
+  if (l.isString(arg)) {
+    return JSON.parse(arg)
+  }
+  return arg
+}
+
 export function getArgumentInteger(
   req: NextApiRequest,
   key: string,

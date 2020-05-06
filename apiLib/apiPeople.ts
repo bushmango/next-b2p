@@ -3,6 +3,9 @@ import { postJson } from './lib/apiUtil'
 import { db } from './lib/databaseB2P'
 import { apiArguments } from './lib/apiArguments-sidecar'
 import l from 'lodash'
+import { generateUuidV4 } from '../common/lib/generateId'
+import { DateTime } from 'luxon'
+import { searchIndex } from './lib/searchIndex-sidecar'
 
 const table = 'b2p_people_v5'
 
@@ -68,97 +71,62 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
   })
 }
 
-//   post(app, '/api/people/get', async (req, res) => {
-//     let { guid } = req.body
-//     let organization = res.locals.user.organization
+export async function add(req: NextApiRequest, res: NextApiResponse) {
+  return postJson(req, res, async (req, user) => {
+    let organization = user?.organization
+    let Guid = generateUuidV4()
 
-//     const table = 'b2p_people_v5'
-//     let results = await db
-//       .from(table)
-//       .select()
-//       .where({ organization, guid })
+    let json = { Guid, FullName: 'Person, New', Packages: [] }
+    let results = await db.into(table).insert({
+      json: json,
+      search: searchIndex.calcSearchIndex(json),
+      guid: Guid,
+      organization,
+      created_at: DateTime.local().toISO(),
+      deleted: false,
+    })
 
-//     return { record: results[0] }
-//   })
+    return { results: results, guid: Guid }
+  })
+}
 
-// import { _ } from '@/common/lib/lodash'
-// import * as express from 'express'
+export async function rebuildSearchIndex(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  return postJson(req, res, async (req, user) => {
+    let skip = apiArguments.getArgumentInteger(req, 'skip') || 0
+    let limit = apiArguments.getArgumentInteger(req, 'limit') || 100
 
-// import { ping, post } from './apiUtil'
-// import { db } from './databaseB2P'
-// import { calcSearchIndex, rebuildSearchIndex } from './rebuildSearchIndex'
-// import uuid from 'uuid'
-// import { DateTime } from 'luxon'
+    let numProcessed = await searchIndex.rebuildSearchIndex(skip, limit)
+    return { message: 'built-index', skip, limit, numProcessed }
+  })
+}
 
-// export function install(app: express.Express) {
-//   ping(app, '/api/people/ping')
-
-//   post(app, '/api/people/rebuild-search-index', async (req, res) => {
-//     const { skip, limit } = req.body
-//     let numProcessed = await rebuildSearchIndex(skip, limit)
-//     return { message: 'built-index', skip, limit, numProcessed }
-//   })
-
-//   post(app, '/api/people/add', async (req, res) => {
-//     // let { json } = req.body
-//     let organization = res.locals.user.organization
-
-//     // let { Guid } = json
-//     let Guid = uuid.v4()
-//     let json = { Guid, FullName: 'Person, New', Packages: [] }
-//     const table = 'b2p_people_v5'
-//     let results = await db.into(table).insert({
-//       json: json,
-//       search: calcSearchIndex(json),
-//       guid: Guid,
-//       organization,
-//       created_at: DateTime.local().toISO(),
-//       deleted: false,
-//     })
-
-//     return { results: results, guid: Guid }
-//   })
-
-//   post(app, '/api/people/set', async (req, res) => {
-//     let { json, deleted } = req.body
-//     let organization = res.locals.user.organization
-
-//     let { Guid } = json
-
-//     const table = 'b2p_people_v5'
-//     let update = {
-//       json: json,
-//       deleted: deleted || false,
-//       search: calcSearchIndex(json),
-//       updated_at: DateTime.local().toISO(),
-//     }
-//     // console.log('update', update)
-//     let results = await db
-//       .from(table)
-//       .update(update)
-//       .where({ organization, guid: Guid })
-
-//     return { results: results }
-//   })
-
-//   // app.get('/api/people', async (req, res) => {
-//   //   if (!auth(req, res)) {
-//   //     return
-//   //   }
-
-//   //   const { key, text, options } = req.body
-
-//   //   let organization = res.locals.user.organization
-
-//   //   const table = 'b2p_people_v5'
-//   //   let results = await db
-//   //     .from(table)
-//   //     .select()
-//   //     .where({ organization })
-//   //     .limit(100)
-
-//   //   res.json({
-//   //     results: results,
-//   //   })
-//   // })
+// export async function name(req: NextApiRequest, res: NextApiResponse) {
+//   return postJson(req, res, async (req, user) => {})
 // }
+
+export async function set(req: NextApiRequest, res: NextApiResponse) {
+  return postJson(req, res, async (req, user) => {
+    let json = apiArguments.getArgumentJson(req, 'json')
+    let deleted = apiArguments.getArgumentBoolean(req, 'deleted')
+
+    let organization = user?.organization
+
+    let { Guid } = json
+
+    let update = {
+      json: json,
+      deleted: deleted || false,
+      search: searchIndex.calcSearchIndex(json),
+      updated_at: DateTime.local().toISO(),
+    }
+    let results = await db
+      .from(table)
+      .update(update)
+      .where({ organization, guid: Guid })
+
+    return { results: results }
+  })
+}

@@ -7,7 +7,7 @@ export const LinkButton = (props: {
 }) => {
   return (
     <a
-      href='javascript: void(0)'
+      // href='javascript: void(0)'
       className={css.linkButton}
       onClick={props.onClick}
     >

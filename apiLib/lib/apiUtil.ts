@@ -71,6 +71,7 @@ export async function actionJson(
     }
   } catch (err) {
     console.log(err)
+    res.status(500)
     res.json({ isError: true, error: 'unhandled-error' })
   }
 }

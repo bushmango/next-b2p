@@ -17,7 +17,9 @@ export const EditPerson = (props: { guid: string }) => {
   let state = sosB2P.useSubscribe()
 
   useEffect(() => {
-    sosB2P.fetchPerson(props.guid)
+    if (props.guid) {
+      sosB2P.fetchPerson(props.guid)
+    }
   }, [props.guid])
 
   let isLoading = state.requestPerson.isFetching

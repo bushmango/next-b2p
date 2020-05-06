@@ -4,7 +4,7 @@
   "scripts": {
     "1": "yarn rimraf .next && yarn concurrently \"yarn dev\" \"yarn 2\" \"yarn sidecar\"",
     "2": "yarn css-watch",
-    "sidecar": "yarn barrel-rider-sidecar --watch --src components lib common api",
+    "sidecar": "yarn barrel-rider-sidecar --watch --src components lib common apiLib",
     "css-watch": "yarn tsm  \"**/*.module.scss\" --ignore \"**/node_modules\" --watch",
     "css": "yarn tsm  \"**/*.module.scss\" --ignore \"**/node_modules\"",
     "dev": "next",
@@ -21,11 +21,13 @@
     "@types/lodash": "4.14.150",
     "@types/luxon": "^1.22.0",
     "@types/ramda": "^0.27.4",
+    "@types/uuid": "^7.0.3",
     "@zeit/next-sass": "^1.0.1",
     "barrel-rider-sidecar": "1.0.23",
     "concurrently": "5.2.0",
     "fast-random": "^2.0.4",
     "giphy-api": "^2.0.1",
+    "google-books-search": "^0.3.1",
     "isomorphic-unfetch": "^3.0.0",
     "knex": "^0.21.1",
     "lodash": "^4.17.15",
@@ -39,7 +41,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-useportal": "^1.0.13",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "uuid": "^8.0.0"
   },
   "devDependencies": {
     "@types/node": "13.13.4",

@@ -24,7 +24,7 @@ export const EditPersonDetails = (props: { state: IStateB2P }) => {
                     <div>{state.editPerson.json[c.field]}</div>
                   ) : (
                     <Input
-                      value={state.editPerson.json[c.field]}
+                      value={state.editPerson.json[c.field] || ''}
                       onChange={(newVal) => {
                         sosB2P.updateEditPerson({ [c.field]: newVal })
                       }}
