@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Layout } from '../Layout-sidecar'
+import { Layout } from '../layout/Layout-sidecar'
 import { ApiTest } from './ApiTest'
 import { sosAdmin } from './sosAdmin-sidecar'
 import { sosUser } from '../account/sosUser-sidecar'
