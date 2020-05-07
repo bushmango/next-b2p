@@ -1,0 +1,5 @@
+- get loaders working
+- make prettier
+- test!
+- update database to live database
+- release!!

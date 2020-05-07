@@ -1,6 +1,6 @@
 import React from 'react'
 import { InternalLink } from '../../common/components/internal-link/InternalLink'
-import { Layout } from '../Layout-sidecar'
+import { Layout } from '../layout/Layout-sidecar'
 import css from './Home.module.scss'
 
 export const HomePage = () => {
