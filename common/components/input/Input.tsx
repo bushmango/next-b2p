@@ -56,6 +56,7 @@ export const Input = forwardRef(
       multiline?: boolean
       notResizable?: boolean
       label?: React.ReactNode
+      iconLeft?: boolean
     },
     ref?: any,
   ) => {
@@ -161,6 +162,10 @@ export const Input = forwardRef(
     }
     if (props.notResizable) {
       className += ' ' + classes.notResizable
+    }
+
+    if (props.iconLeft) {
+      className += ' ' + classes.iconLeft
     }
 
     let { autoComplete: autocomplete } = props

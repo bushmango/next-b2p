@@ -1,21 +1,17 @@
-import Head from 'next/head'
 import React from 'react'
-import { NewsBox } from '../news/NewsBox'
-import { Layout } from '../layout/Layout'
 import { Button } from '../../common/components/button/Button-sidecar'
 import { Giphy } from '../../common/components/giphy/Giphy-sidecar'
 import { Input } from '../../common/components/input/Input-sidecar'
-import { sosUser } from '../account/sosUser-sidecar'
 import { IStateUser } from '../account/sosUser'
+import { sosUser } from '../account/sosUser-sidecar'
+import { Layout } from '../layout/Layout'
+import { NewsBox } from '../news/NewsBox'
 
 export const LoginPage = () => {
   let state = sosUser.useSubscribe()
 
   return (
     <Layout title='Login'>
-      <Head>
-        <title>Login</title>
-      </Head>
       <Login state={state} />
       <Logout state={state} />
       <NewsBox />

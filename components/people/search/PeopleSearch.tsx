@@ -53,9 +53,16 @@ export const PeopleSearch = () => {
   return (
     <div>
       <div className={css.toolbarLayout}>
-        <div className={css.toolbarItem}>Search for:</div>
+        <div className={css.toolbarItem}></div>
         <div className={css.toolbarItem}>
-          <Input value={state.searchText} onChange={onChange} />
+          <div className={css.toolbarSearch}>
+            <Icon icon={solidIcons.faSearch} className={css.icon} />
+            <Input
+              value={state.searchText}
+              onChange={onChange}
+              iconLeft={true}
+            />
+          </div>
         </div>
         <div className={css.toolbarItem}>
           <TagButton

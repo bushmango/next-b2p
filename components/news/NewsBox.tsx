@@ -14,7 +14,14 @@ export const NewsBox = () => {
       <div style={{ fontSize: '1.5em' }}>News / changelog</div>
 
       {/* <div>Build: {buildDateTime}</div> */}
-      <div>Version 6 -- Move to NextJS Cloud</div>
+      <div>
+        Version 6 -- Move to NextJS Cloud
+        <ul>
+          <li>
+            5/8/2020 - Fix misc. bugs, move to more stable server, beautify
+          </li>
+        </ul>
+      </div>
       <div>
         Version 5 -- Cloud + Multi-tenant support
         <ul>

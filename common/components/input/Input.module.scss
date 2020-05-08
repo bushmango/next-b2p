@@ -5,7 +5,7 @@
   padding: 2px;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #aaa;
-  border-radius: 3px;
+  border-radius: 5px;
 
   min-height: 23px;
   width: 100%;
@@ -14,6 +14,11 @@
   outline: none;
 
   @include focusHighlight();
+
+  &.iconLeft {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
 
   &.notResizable {
     resize: none;

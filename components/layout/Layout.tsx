@@ -16,49 +16,54 @@ export const Layout = (props: {
     <React.Fragment>
       {props.title && (
         <Head>
-          <title>{props.title}</title>
+          <title>{props.title} &ndash; Books to Prisoners Database</title>
         </Head>
       )}
 
       <div className={cssPrint.notPrintable}>
-        <div className={css.links}>
-          <div className={css.link}>
-            <InternalLink href='/'>Home</InternalLink>
-          </div>
-          <div className={css.link}>
-            <InternalLink href='/about'>About</InternalLink>
-          </div>
-          <div className={css.link}>
-            <InternalLink href='/news'>News</InternalLink>
-          </div>
-          {isLoggedIn && (
-            <React.Fragment>
-              <div className={css.link}>
-                <InternalLink href='/people/search'>People Search</InternalLink>
-              </div>
-              {/* <div className={classes.link}>
+        <div className={css.headerBar}>
+          <div className={css.title}>Books to Prisoners Database</div>
+
+          <div className={css.links}>
+            <div className={css.link}>
+              <InternalLink href='/'>Home</InternalLink>
+            </div>
+            <div className={css.link}>
+              <InternalLink href='/about'>About</InternalLink>
+            </div>
+            <div className={css.link}>
+              <InternalLink href='/news'>News</InternalLink>
+            </div>
+            {isLoggedIn && (
+              <React.Fragment>
+                <div className={css.link}>
+                  <InternalLink href='/people/search'>
+                    People Search
+                  </InternalLink>
+                </div>
+                {/* <div className={classes.link}>
               <RazLink to='/books/search'>Book Search</RazLink>
             </div> */}
-              {/* <div className={classes.link}>
+                {/* <div className={classes.link}>
               <RazLink to='/api-test'>Api Test</RazLink>
             </div> */}
-              <div className={css.link}>
-                <InternalLink href='/admin'>Admin</InternalLink>
-              </div>
-              <div className={css.link}>
-                <InternalLink href='/login'>Logout</InternalLink>
-              </div>
-            </React.Fragment>
-          )}
-          {!isLoggedIn && (
-            <React.Fragment>
-              <div className={css.link}>
-                <InternalLink href='/login'>Login</InternalLink>
-              </div>
-            </React.Fragment>
-          )}
+                {/* <div className={css.link}>
+                  <InternalLink href='/admin'>Admin</InternalLink>
+                </div> */}
+                <div className={css.link}>
+                  <InternalLink href='/login'>Logout</InternalLink>
+                </div>
+              </React.Fragment>
+            )}
+            {!isLoggedIn && (
+              <React.Fragment>
+                <div className={css.link}>
+                  <InternalLink href='/login'>Login</InternalLink>
+                </div>
+              </React.Fragment>
+            )}
+          </div>
         </div>
-        <hr />
         <div className={css.body}>{props.children}</div>
         <div>
           <Footer />

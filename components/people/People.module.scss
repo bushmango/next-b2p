@@ -11,6 +11,21 @@
   padding-right: 10px;
 }
 
+.toolbarSearch {
+  display: inline-flex;
+  align-items: center;
+  .icon {
+    padding-right: 3px;
+    padding: 2px;
+    padding-top: 3px;
+    border: solid 1px #aaa;
+    background-color: #ccc;
+    border-right: 0;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+}
+
 .quickPriceLayout {
   display: flex;
   justify-content: space-around;
