@@ -11,7 +11,10 @@ export const TagButton = (props: {
 }) => {
   return (
     <div className={css.tagButton} onClick={props.onClick}>
-      <Badge color={props.isActive ? 'blue' : 'grey'}>
+      <Badge
+        color={props.isActive ? '#f4976C' : '#d2fdff'}
+        textColor={props.isActive ? 'white' : 'black'}
+      >
         {props.isActive ? props.active : props.inactive}
       </Badge>
     </div>

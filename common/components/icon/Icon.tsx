@@ -2,7 +2,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-import styles from './Icon.module.scss'
+import css from './Icon.module.scss'
 import { regularIcons } from './regularIcons'
 import { solidIcons } from './solidIcons'
 
@@ -11,7 +11,9 @@ export { regularIcons, solidIcons }
 export const Icon = (props: { icon?: IconDefinition; className?: string }) => {
   return (
     <FontAwesomeIcon
-      className={props.className}
+      className={
+        css.defaultStyle + (props.className ? ' ' + props.className : '')
+      }
       icon={props.icon || solidIcons.faCoffee}
     />
   )
@@ -25,9 +27,9 @@ export const IconButton = (props: {
   testId?: string
   inline?: boolean
 }) => {
-  let classname = styles.iconButton
+  let classname = css.iconButton
   if (props.inline) {
-    classname += '' + styles.inlineIcon
+    classname += '' + css.inlineIcon
   }
   return (
     <div
