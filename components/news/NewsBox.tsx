@@ -1,18 +1,10 @@
 import React from 'react'
+import { Card } from '../../common/components/card/Card-sidecar'
 // import { buildDateTime } from '@/config'
 
 export const NewsBox = () => {
   return (
-    <div
-      style={{
-        margin: '1em',
-        padding: '1em',
-        border: 'solid 1px #ccc',
-        borderRadius: 4,
-      }}
-    >
-      <div style={{ fontSize: '1.5em' }}>News / changelog</div>
-
+    <Card title='News / Changelog'>
       {/* <div>Build: {buildDateTime}</div> */}
       <div>
         Version 6 -- Move to NextJS Cloud
@@ -92,6 +84,6 @@ export const NewsBox = () => {
           </li>
         </ul>
       </div>
-    </div>
+    </Card>
   )
 }

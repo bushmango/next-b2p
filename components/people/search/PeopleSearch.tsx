@@ -111,7 +111,11 @@ export const PeopleSearch = () => {
                   route.navTo('/people/edit/' + c.guid)
                 }}
               >
-                <td>{c.deleted && <Badge>Deleted, do not use</Badge>} </td>
+                <td>
+                  {c.deleted && (
+                    <Badge isActive={true}>Deleted, do not use</Badge>
+                  )}{' '}
+                </td>
                 <td>
                   <InternalLink href={'/people/edit/' + c.guid}>
                     Edit
