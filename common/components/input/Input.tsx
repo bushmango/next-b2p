@@ -6,6 +6,7 @@ import React, {
 } from 'react'
 
 import classes from './Input.module.scss'
+import { l } from '../../lib/lodash'
 
 export type InputType = 'text' | 'password' | 'email'
 
@@ -75,7 +76,7 @@ export const Input = forwardRef(
         props.onBlur(refTextArea.current)
       }
       if (props.onChange) {
-        if (focusedText && focusedText !== props.value) {
+        if (!l.isNil(focusedText) && focusedText !== props.value) {
           props.onChange(focusedText)
         }
       }
