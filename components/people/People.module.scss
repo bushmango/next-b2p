@@ -38,17 +38,21 @@
 
 .packageSeparator {
   height: 1px;
-  border-top: solid 1px blue;
+  border-top: solid 2px #303c6c;
 }
 
 .bookSearchResult {
-  border: solid 1px blue;
-  border-radius: 3px;
-  margin: 5px;
+  border: solid 2px #303c6c;
+  border-radius: 5px;
+  margin-top: 5px;
   padding: 5px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  &:hover {
+    border: solid 2px #f4976c;
+    // background-color: #eee; //#d2fdff;
+  }
 }
 
 .bookSearchThumbnail {

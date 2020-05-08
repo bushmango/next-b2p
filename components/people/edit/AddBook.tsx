@@ -8,6 +8,8 @@ import { LinkButton } from '../../../common/components/link-button/LinkButton-si
 import { IStateB2P, quickPrices } from '../sosB2P'
 import { sosB2P } from '../sosB2P-sidecar'
 import css from '../People.module.scss'
+import cssTable from './EditPersonDetails.module.scss'
+import { TagButton } from '../../../common/components/tag-button/TagButton-sidecar'
 
 export const AddABook = (props: { state: IStateB2P }) => {
   let { state } = props
@@ -21,7 +23,7 @@ export const AddABook = (props: { state: IStateB2P }) => {
       <table>
         <tbody>
           <tr>
-            <td>Title</td>
+            <th className={cssTable.header}>Title</th>
             <td>
               <Input
                 ref={refTitle}
@@ -37,7 +39,7 @@ export const AddABook = (props: { state: IStateB2P }) => {
             </td>
           </tr>
           <tr>
-            <td>Author</td>
+            <th className={cssTable.header}>Author</th>
             <td>
               <Input
                 ref={refAuthor}
@@ -53,7 +55,7 @@ export const AddABook = (props: { state: IStateB2P }) => {
             </td>
           </tr>
           <tr>
-            <td>Price</td>
+            <th className={cssTable.header}>Price</th>
             <td>
               <Input
                 ref={refPrice}
@@ -73,13 +75,14 @@ export const AddABook = (props: { state: IStateB2P }) => {
               <div className={css.quickPriceLayout}>
                 {l.map(quickPrices, (c) => (
                   <div key={c} className={css.quickPriceItem}>
-                    <LinkButton
+                    <TagButton
                       onClick={() => {
                         sosB2P.updateEditNewBook({ Price: c })
                       }}
-                    >
-                      {c}
-                    </LinkButton>
+                      isActive={state.editNewBook.Price === c}
+                      active={c}
+                      inactive={c}
+                    />
                   </div>
                 ))}
               </div>

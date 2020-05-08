@@ -6,19 +6,19 @@ import { IStateB2P } from '../sosB2P'
 import { sosB2P } from '../sosB2P-sidecar'
 import { fields } from './peopleFields'
 import { l } from '../../../common/lib/lodash'
-
+import css from './EditPersonDetails.module.scss'
 export const EditPersonDetails = (props: { state: IStateB2P }) => {
   let { state } = props
   return (
     <Card title='Person details' minHeight='331px'>
-      <Spacer />
-      <Spacer />
+      {/* <Spacer /> */}
+      {/* <Spacer /> */}
       <table>
         <tbody>
           {l.map(fields, (c) => {
             return (
               <tr key={c.field}>
-                <th>{c.label || c.field}</th>
+                <th className={css.header}>{c.label || c.field}</th>
                 <td style={{ minWidth: '300px' }}>
                   {c.readonly ? (
                     <div>{state.editPerson.json[c.field]}</div>

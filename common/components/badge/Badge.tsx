@@ -3,18 +3,14 @@ import React from 'react'
 
 export const Badge = (props: {
   children?: React.ReactNode
-  color?: string
-  textColor?: string
+  isActive?: boolean
+  // color?: string
+  // textColor?: string
 }) => {
-  return (
-    <div
-      className={css.badge}
-      style={{
-        backgroundColor: props.color || '#f4976C',
-        color: props.textColor,
-      }}
-    >
-      {props.children}
-    </div>
-  )
+  let className = css.badge
+  if (props.isActive) {
+    className += ' ' + css.active
+  }
+
+  return <div className={className}>{props.children}</div>
 }

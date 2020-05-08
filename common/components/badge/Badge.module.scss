@@ -1,8 +1,40 @@
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+@mixin button($color, $textColor) {
+  cursor: pointer;
+
+  @include transition(color 0.2s ease);
+  @include transition(background-color 0.2s ease);
+  background-color: $color;
+
+  color: $textColor;
+
+  &:hover {
+    background-color: darken($color, 10%);
+    color: darken($textColor, 20%);
+  }
+  &:active {
+    background-color: darken($color, 20%);
+    color: darken($textColor, 30%);
+  }
+}
+
 .badge {
-  background-color: blue;
-  color: white;
-  border-radius: 3px;
+  // background-color: #d2fdff;
+  // color: black;
+  border-radius: 5px;
   font-size: 11px;
   padding: 2px;
   border: solid 1px #999;
+  @include button(#d2fdff, black);
+  &.active {
+    background-color: #f4976c;
+    @include button(#f4976c, black);
+  }
 }
