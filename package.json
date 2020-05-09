@@ -4,7 +4,7 @@
   "scripts": {
     "1": "yarn rimraf .next && yarn concurrently \"yarn dev\" \"yarn 2\" \"yarn sidecar\"",
     "2": "yarn css-watch",
-    "sidecar": "yarn barrel-rider-sidecar --watch --src components lib common apiLib",
+    "sidecar": "yarn barrel-rider-sidecar --remove --watch --src components lib common apiLib",
     "css-watch": "yarn tsm  \"**/*.module.scss\" --ignore \"**/node_modules\" --watch",
     "css": "yarn tsm  \"**/*.module.scss\" --ignore \"**/node_modules\"",
     "dev": "next",
