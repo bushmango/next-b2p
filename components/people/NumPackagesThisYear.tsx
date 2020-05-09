@@ -8,7 +8,7 @@ export const NumPackagesThisYear = (props: { json: any }) => {
     totalScreensThisYear,
   } = sosB2P.calcNumUnreturnedPackages(props.json)
   return (
-    <div>
+    <div style={{ paddingTop: '2px' }}>
       <span>
         {l.map(l.times(totalUnreturnedPackagesThisYear), (c) => (
           <Icon key={c} icon={solidIcons.faBook} />

@@ -19,7 +19,7 @@ export const AddABook = (props: { state: IStateB2P }) => {
   let refPrice = useRef<any>(null)
 
   return (
-    <Card title='Add a book' minWidth='430px'>
+    <Card title='Add a book' minWidth='430px' minHeight='171px'>
       <table>
         <tbody>
           <tr>

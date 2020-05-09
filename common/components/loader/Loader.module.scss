@@ -1,10 +1,14 @@
 .infiniteLoader {
-  min-height: 2px;
-  height: 2px;
+  min-height: 6px;
+  max-height: 6px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .infiniteLoaderBar {
   border-radius: 2px;
   height: 2px;
-  background-color: #ccc;
+  max-height: 2px;
+  min-height: 2px;
+  background-color: #f4976c;
 }

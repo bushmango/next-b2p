@@ -11,6 +11,7 @@ import { route } from '../../../common/lib/route-sidecar'
 import { Spacer } from '../../spacer/Spacer-sidecar'
 import { NumPackagesThisYear } from '../NumPackagesThisYear-sidecar'
 import css from '../People.module.scss'
+import cssTable from '../edit/EditPersonDetails.module.scss'
 import { sosB2P } from '../sosB2P-sidecar'
 
 interface IHeader {
@@ -86,26 +87,32 @@ export const PeopleSearch = () => {
         </div>
       </div>
 
-      <div style={{ minHeight: '20px' }}>
-        <Loader isLoading={isLoading} />
-      </div>
+      <Loader isLoading={isLoading} />
+
       {peopleSearchData && (
-        <table>
+        <table className={css.tableSearch} cellSpacing={0} cellPadding={0}>
           <thead>
             <tr>
               <th />
               <th />
               {/* <th>#</th> */}
-              <th title='Packages sent this year'>Packages*</th>
+              <th
+                className={cssTable.headerVertical}
+                title='Packages sent this year'
+              >
+                Packages*
+              </th>
               {l.map(headers, (h, hIdx) => (
-                <th key={'h-' + hIdx}>{h.label || h.field}</th>
+                <th className={cssTable.headerVertical} key={'h-' + hIdx}>
+                  {h.label || h.field}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {l.map(peopleSearchData, (c, cIdx) => (
               <tr
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', verticalAlign: 'middle' }}
                 key={'r-' + cIdx}
                 onClick={() => {
                   route.navTo('/people/edit/' + c.guid)
@@ -117,9 +124,15 @@ export const PeopleSearch = () => {
                   )}{' '}
                 </td>
                 <td>
-                  <InternalLink href={'/people/edit/' + c.guid}>
+                  {/* <InternalLink href={'/people/edit/' + c.guid}>
                     Edit
-                  </InternalLink>
+                  </InternalLink> */}
+                  <TagButton
+                    onClick={() => route.navTo('/people/edit/' + c.guid)}
+                    isActive={false}
+                    active={'Edit'}
+                    inactive={'Edit'}
+                  />
                 </td>
                 {/* <td>{cIdx + 1}</td> */}
                 <td>

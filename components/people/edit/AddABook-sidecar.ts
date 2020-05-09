@@ -2,5 +2,4 @@
 /* eslint-disable */
 /* tslint:disable */
 export const noop = () => {}
-import * as AddBook from './AddBook'
-export { AddBook }
+export * from './AddABook'

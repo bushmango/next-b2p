@@ -373,16 +373,19 @@ export const fetchBookSearchThrottled = l.debounce(fetchBookSearch, 500)
 
 async function fetchBookSearch() {
   let state = getSos().getState()
-  return await apiRequest.post<any>(
-    '/api/books/search',
-    { search: state.bookSearchText },
-    (rs) => {
-      getSos().change((ds) => {
-        ds.requestBookSearch = rs
-        ds.requestBookSearch.params = state.bookSearchText
-      })
-    },
-  )
+
+  if (state.bookSearchText) {
+    return await apiRequest.post<any>(
+      '/api/books/search',
+      { search: state.bookSearchText },
+      (rs) => {
+        getSos().change((ds) => {
+          ds.requestBookSearch = rs
+          ds.requestBookSearch.params = state.bookSearchText
+        })
+      },
+    )
+  }
 }
 
 export async function selectBook(c: any) {

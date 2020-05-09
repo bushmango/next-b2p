@@ -8,3 +8,4 @@ export const quickPriceItem: string;
 export const packageSeparator: string;
 export const bookSearchResult: string;
 export const bookSearchThumbnail: string;
+export const tableSearch: string;

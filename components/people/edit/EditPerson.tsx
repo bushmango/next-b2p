@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { AddABook } from './AddBook'
+import { AddABook } from './AddABook'
 import { BookSearchResults } from './BookSearchResults'
 import { EditPackages } from './EditPackages'
 import { EditPersonDetails } from './EditPersonDetails'
@@ -12,6 +12,7 @@ import { Icon, solidIcons } from '../../../common/components/icon/Icon-sidecar'
 import { route } from '../../../common/lib/route-sidecar'
 import { TagButton } from '../../../common/components/tag-button/TagButton-sidecar'
 import { Loading } from './Loading-sidecar'
+import { Loader } from '../../../common/components/loader/Loader'
 
 export const EditPerson = (props: { guid: string }) => {
   let state = sosB2P.useSubscribe()
@@ -59,7 +60,8 @@ export const EditPerson = (props: { guid: string }) => {
       </div>
 
       {/* Edit person {props.guid} */}
-      <Loading isLoading={isLoading} />
+      <Loader isLoading={isLoading} />
+      {/* <Loading isLoading={isLoading} /> */}
       {!isLoading && state.editPerson && (
         <div>
           <div style={{ display: 'flex' }}>

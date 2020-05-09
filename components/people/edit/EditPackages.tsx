@@ -6,25 +6,25 @@ import { TagButton } from '../../../common/components/tag-button/TagButton-sidec
 import css from '../People.module.scss'
 import { IStateB2P } from '../sosB2P'
 import { sosB2P } from '../sosB2P-sidecar'
-
+import cssTable from './EditPersonDetails.module.scss'
 export const EditPackages = (props: { state: IStateB2P }) => {
   let { state } = props
 
   return (
     <div>
-      <Card title='Packages sent to this person'>
+      <Card title='Packages sent to this person' maxWidth='912px'>
         <table>
           <thead>
             <tr>
               <th />
               <th />
               <th />
-              <th>Date</th>
+              <th className={cssTable.headerVertical}>Date</th>
               <th />
               <th />
-              <th>Title</th>
-              <th>Price</th>
-              <th>Author</th>
+              <th className={cssTable.headerVertical}>Title</th>
+              <th className={cssTable.headerVertical}>Price</th>
+              <th className={cssTable.headerVertical}>Author</th>
             </tr>
           </thead>
           <tbody>

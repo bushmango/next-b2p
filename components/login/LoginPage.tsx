@@ -34,7 +34,9 @@ export const Logout = (props: { state: IStateUser }) => {
       <Card>
         <div>
           Currently logged in as:
-          <div style={{ padding: '10px' }}>{state.username}</div>
+          <div style={{ padding: '10px', fontWeight: 'bold' }}>
+            {state.username}
+          </div>
         </div>
 
         <Button

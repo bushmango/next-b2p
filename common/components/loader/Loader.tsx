@@ -1,14 +1,17 @@
 import React from 'react'
 
-import styles from './Loader.module.scss'
+import css from './Loader.module.scss'
 import useAnimationForever from '../../../lib/useAnimationForever'
 // import { useAnimationFrame } from '../hooks/useAnimationFrame'
 
 export const Loader = (props: { isLoading?: boolean }) => {
   //return <div>Loading</div>
   return (
-    <div className={styles.infiniteLoader}>
-      {props.isLoading !== false && <InfiniteLoaderInner />}
+    <div className={css.infiniteLoader}>
+      {/* <InfiniteLoaderInner /> */}
+      {props.isLoading !== false && props.isLoading !== undefined && (
+        <InfiniteLoaderInner />
+      )}
     </div>
   )
 }
@@ -26,10 +29,7 @@ const InfiniteLoaderInner = () => {
 
   return (
     <div>
-      <div
-        className={styles.infiniteLoaderBar}
-        style={{ width: y * 100 + '%' }}
-      />
+      <div className={css.infiniteLoaderBar} style={{ width: y * 100 + '%' }} />
     </div>
   )
 }

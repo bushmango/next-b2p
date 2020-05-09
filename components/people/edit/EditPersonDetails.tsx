@@ -10,7 +10,7 @@ import css from './EditPersonDetails.module.scss'
 export const EditPersonDetails = (props: { state: IStateB2P }) => {
   let { state } = props
   return (
-    <Card title='Person details' minHeight='331px'>
+    <Card title='Person details' minHeight='331px' minWidth='460px'>
       {/* <Spacer /> */}
       {/* <Spacer /> */}
       <table>

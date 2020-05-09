@@ -60,3 +60,15 @@
   width: auto;
   margin-left: 10px;
 }
+
+table.tableSearch {
+  tbody tr {
+    &:hover {
+      background-color: #fbe8a6;
+    }
+  }
+  td,
+  th {
+    padding: 4px;
+  }
+}

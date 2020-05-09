@@ -18,13 +18,13 @@ export const BookSearchResults = (props: {
   return (
     <Card title='Book search' minWidth='430px'>
       <div>
-        <Loader isLoading={state.requestBookSearch.isFetching} />
-
         <Input
           ref={refBookSearch}
           value={state.bookSearchText}
           onChange={(newVal) => sosB2P.updateBookSearchText(newVal)}
         />
+
+        <Loader isLoading={state.requestBookSearch.isFetching} />
 
         {state.requestBookSearch.response &&
           !state.requestBookSearch.isFetching &&
