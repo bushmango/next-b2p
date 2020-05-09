@@ -2,9 +2,11 @@ import Head from 'next/head'
 import React from 'react'
 import { InternalLink } from '../../common/components/internal-link/InternalLink'
 import { sosUser } from '../account/sosUser-sidecar'
+import { ClientOnly } from '../ClientOnly'
+import cssPrint from '../people/print/Print.module.scss'
 import { Footer } from './Footer-sidecar'
 import css from './Layout.module.scss'
-import cssPrint from '../people/print/Print.module.scss'
+import { Redirect } from './Redirect'
 
 export const Layout = (props: {
   children: React.ReactNode
@@ -12,6 +14,7 @@ export const Layout = (props: {
 }) => {
   const state = sosUser.useSubscribe()
   let isLoggedIn = !!state.token
+
   return (
     <React.Fragment>
       {props.title && (
@@ -19,6 +22,10 @@ export const Layout = (props: {
           <title>{props.title} &ndash; Books to Prisoners Database</title>
         </Head>
       )}
+
+      <ClientOnly>
+        <Redirect />
+      </ClientOnly>
 
       <div className={cssPrint.notPrintable}>
         <div className={css.headerBar}>
