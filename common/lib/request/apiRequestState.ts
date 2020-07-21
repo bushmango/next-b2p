@@ -34,7 +34,7 @@ export const createSuccess = <T extends any>(
     startTime: request && request.startTime,
     endTime: new Date().toISOString(),
     response,
-    isSuccess: response && response.isSuccess,
+    isSuccess: response && (response as any).isSuccess,
   }
 }
 export const createError = <T extends any>(

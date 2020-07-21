@@ -52,7 +52,7 @@ export async function rebuildPeopleSearchIndex() {
         })
       },
     )
-    if (!r.isSuccess || !r.response.numProcessed) {
+    if (!r.isSuccess || !(r.response as any).numProcessed) {
       doContinue = false
       break
     }
