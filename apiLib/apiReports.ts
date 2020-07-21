@@ -79,6 +79,8 @@ export async function runReport_covidUpdate(
         address: c.json.Address || '',
         institution: c.json.Institution || '',
         notes: c.json.Notes || '',
+        id: c.json.Id || '',
+        aka: c.json.Aka || '',
         // numPack: c.json.NumPackagesThisYear,
         recent: recent,
         // all: ro.all,

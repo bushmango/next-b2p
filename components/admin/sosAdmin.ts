@@ -106,11 +106,13 @@ export async function runReport_covidUpdate() {
   const headers = [
     'name',
     'preferredName',
+    'aka',
     'recent',
     'city',
     'state',
     'zip',
     'address',
+    'id',
     'unit',
     'institution',
     'notes',
