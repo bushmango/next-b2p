@@ -9,6 +9,7 @@ export interface IStateAdmin {
   requestRestoreDatabase: IApiRequestState<any>
   requestBackupDatabase: IApiRequestState<any>
   requestGrantDatabase: IApiRequestState<any>
+  requestReport: IApiRequestState<any>
 }
 
 const getSos = sos.createLazySos2('sosAdmin', 1, () => ({
@@ -25,6 +26,9 @@ const getSos = sos.createLazySos2('sosAdmin', 1, () => ({
     default: {},
   },
   requestGrantDatabase: {
+    default: {},
+  },
+  requestReport: {
     default: {},
   },
   rebuildCount: {
@@ -81,6 +85,14 @@ export async function grantDatabase() {
   await apiRequest.post('/api/backup/grant', {}, (r) => {
     getSos().change((ds) => {
       ds.requestGrantDatabase = r
+    })
+  })
+}
+
+export async function runReport_covidUpdate() {
+  await apiRequest.post('/api/reports/covid-update', {}, (r) => {
+    getSos().change((ds) => {
+      ds.requestReport = r
     })
   })
 }

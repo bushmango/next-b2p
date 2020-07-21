@@ -2,6 +2,7 @@ import { apiRegister } from './api-sidecar'
 import { apiAccount } from './apiAccount-sidecar'
 import { apiPeople } from './apiPeople-sidecar'
 import { apiBooks } from './apiBooks-sidecar'
+import { apiReports } from './apiReports-sidecar'
 
 export function registerAll() {
   apiRegister('/account/login', apiAccount.login)
@@ -11,5 +12,7 @@ export function registerAll() {
   apiRegister('/people/add', apiPeople.add)
   apiRegister('/people/set', apiPeople.set)
   apiRegister('/people/rebuildSearchIndex', apiPeople.rebuildSearchIndex)
-  apiBooks.install()
+
+  apiReports.installAll()
+  apiBooks.installAll()
 }

@@ -3,7 +3,7 @@ import { postJson } from './lib/apiUtil'
 
 const books = require('google-books-search')
 
-export function install() {
+export function installAll() {
   apiRegister('/books/search', async (req, res) => {
     return postJson(req, res, async (req, user) => {
       const { search } = req.body
