@@ -9,6 +9,7 @@ export const NewsBox = () => {
       <div>
         Version 6 -- Move to NextJS Cloud
         <ul>
+          <li>7/21/2020 - Add basic reporting functionality</li>
           <li>5/9/2020 - Release!</li>
           <li>
             5/8/2020 - Fix misc. bugs, move to more stable server, beautify
