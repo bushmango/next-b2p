@@ -174,7 +174,7 @@ export async function addPerson() {
     })
   })
   if (r.isSuccess) {
-    route.navTo('/people/edit/' + r.response.guid)
+    route.navTo('/people/edit/' + (r.response as any).guid)
   }
 }
 

@@ -61,7 +61,7 @@ export async function request<T>(
   data: any,
   onProgress: (r: IApiRequestState<T>) => void,
 ) {
-  let r = createRequesting()
+  let r = createRequesting<T>()
   onProgress(r)
 
   if (!url.startsWith('/api/')) {
