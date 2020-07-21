@@ -93,7 +93,8 @@ export async function grantDatabase() {
 export async function runReport_covidUpdate() {
   let result = await apiRequest.post('/api/reports/covid-update', {}, (r) => {
     getSos().change((ds) => {
-      ds.requestReport = r
+      // ds.requestReport = r
+      ds.requestReport = { s: r.response ? (r.response as any).num2 : '' }
     })
   })
 
@@ -102,7 +103,18 @@ export async function runReport_covidUpdate() {
   let processed = (result.response as any).processed
   console.log('pp', processed)
 
-  const headers = ['name', 'preferredName', 'recent']
+  const headers = [
+    'name',
+    'preferredName',
+    'recent',
+    'city',
+    'state',
+    'zip',
+    'address',
+    'unit',
+    'institution',
+    'notes',
+  ]
 
   function encodeCsv(s: string) {
     if (!s) {
@@ -112,7 +124,8 @@ export async function runReport_covidUpdate() {
     return s
   }
 
-  let csvContent = 'data:text/csv;charset=utf-8,'
+  // let csvContent = 'data:text/csv;charset=utf-8,'
+  let csvContent = ''
   l.forEach(headers, (h) => {
     csvContent += encodeCsv(h) + ','
   })
@@ -124,10 +137,15 @@ export async function runReport_covidUpdate() {
     })
     csvContent += r + '\r\n'
   })
+  console.log(csvContent)
+
+  var blob = new Blob(['\ufeff', csvContent])
+  var url = URL.createObjectURL(blob)
 
   var encodedUri = encodeURI(csvContent)
   var link = document.createElement('a')
-  link.setAttribute('href', encodedUri)
+  // link.setAttribute('href', encodedUri)
+  link.setAttribute('href', url)
   link.setAttribute('download', 'report.csv')
   document.body.appendChild(link) // Required for FF
   link.click() // This will download the data file named "my_data.csv".
