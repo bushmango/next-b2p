@@ -300,12 +300,20 @@ export async function sendUpdateEditPerson() {
 }
 
 //const B2PDateFormat = 'M/D/YYYY'
-const B2PDateFormat = 'L/d/yyyy'
+export const B2PDateFormat = 'L/d/yyyy'
 export const parseB2PDate = (date: string) => {
   try {
     let split = date.split('/', 3)
+
+    let year = parseInt(split[2])
+    if (year < 90) {
+      year += 2000 // i.e. 14 -> 2014
+    } else if (year < 100) {
+      year += 1900 // i.e. 97 -> 1997
+    }
+
     let parsedDate = DateTime.local(
-      parseInt(split[2]),
+      year,
       parseInt(split[0]),
       parseInt(split[1]),
     )
