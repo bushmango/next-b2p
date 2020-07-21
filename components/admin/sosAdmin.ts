@@ -1,6 +1,7 @@
 import { sos } from '../../common/lib/sos/sos-sidecar'
 import { IApiRequestState } from '../../common/lib/request/apiRequestState'
 import { apiRequest } from '../../common/lib/request/apiRequest-sidecar'
+import { l } from '../../common/lib/lodash'
 
 export interface IStateAdmin {
   requestRebuildPeopleSearchIndex: IApiRequestState<any>
@@ -90,9 +91,44 @@ export async function grantDatabase() {
 }
 
 export async function runReport_covidUpdate() {
-  await apiRequest.post('/api/reports/covid-update', {}, (r) => {
+  let result = await apiRequest.post('/api/reports/covid-update', {}, (r) => {
     getSos().change((ds) => {
       ds.requestReport = r
     })
   })
+
+  // see: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
+
+  let processed = (result.response as any).processed
+  console.log('pp', processed)
+
+  const headers = ['name', 'preferredName', 'recent']
+
+  function encodeCsv(s: string) {
+    if (!s) {
+      s = ''
+    }
+    s = '"' + s.replace(/\"/g, '-') + '"'
+    return s
+  }
+
+  let csvContent = 'data:text/csv;charset=utf-8,'
+  l.forEach(headers, (h) => {
+    csvContent += encodeCsv(h) + ','
+  })
+  csvContent += '\r\n'
+  l.forEach(processed, (c) => {
+    let r = ''
+    l.forEach(headers, (h) => {
+      r += encodeCsv(c[h]) + ','
+    })
+    csvContent += r + '\r\n'
+  })
+
+  var encodedUri = encodeURI(csvContent)
+  var link = document.createElement('a')
+  link.setAttribute('href', encodedUri)
+  link.setAttribute('download', 'report.csv')
+  document.body.appendChild(link) // Required for FF
+  link.click() // This will download the data file named "my_data.csv".
 }
