@@ -106,11 +106,11 @@ const ToBePrinted = (props: { packageToday: any; json: any }) => {
             />
           </div>
           <div style={{ margin: '10px' }}>
-            A Room of One’s Own Books &amp; Gifts
+            A Room of One's Own Bookstore
             <br />
-            315 W. Gorham Street
+            2717 Atwood Ave
             <br />
-            Madison, WI 53703
+            Madison, WI 53704
           </div>
         </div>
         <div>
