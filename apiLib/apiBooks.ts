@@ -8,7 +8,7 @@ export function installAll() {
     return postJson(req, res, async (req, user) => {
       const { search } = req.body
 
-      console.log('serach for', search, process.env.APIKEY_GOOGLEBOOKS)
+      // console.log('serach for', search, process.env.APIKEY_GOOGLEBOOKS)
 
       let options = {
         key: process.env.APIKEY_GOOGLEBOOKS,
@@ -23,7 +23,7 @@ export function installAll() {
           search,
           options,
           (err: any, results: any, apiResponse: any) => {
-            console.log('ret', search, err, results)
+            // console.log('ret', search, err, results)
             if (err) {
               reject(err)
             } else {
