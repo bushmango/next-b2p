@@ -3,7 +3,7 @@ import Head from 'next/head'
 
 import { sosUser } from '../../account/sosUser-sidecar'
 import { Layout } from '../../layout/Layout'
-import { EditPerson } from './EditPerson-sidecar'
+import { EditPerson } from './EditPerson'
 
 export const PeopleEditPage = (props: { pid: string }) => {
   if (!sosUser.ensureLoggedIn()) {

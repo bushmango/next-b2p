@@ -6,12 +6,15 @@ import { l } from '../../lib/lodash'
 
 export const Giphy = (props: { tag: string }) => {
   let [data, setData] = useState<any>(null)
+  let [err, setErr] = useState<any>(null)
   let [tag, setTag] = useState<any>('')
 
   useEffect(() => {
     let tags = l.split(props.tag, ',')
     let tag = l.sample(tags) || ''
     setTag(tag)
+    setErr(null)
+    console.log('starting giphy')
     giphy
       .random({
         tag: tag,
@@ -19,9 +22,27 @@ export const Giphy = (props: { tag: string }) => {
         fmt: 'json',
       })
       .then((res: any) => {
-        setData(res.data)
+        console.log('got giphy', res)
+        if (res.meta.status === 429) {
+          setErr('rate-limited')
+        } else {
+          setData(res.data)
+        }
+      })
+      .catch((err) => {
+        setErr(err)
       })
   }, [props.tag])
+
+  if (err) {
+    return (
+      <div>
+        <div className={classes.giphy}>
+          Giphy error! Please wait for more gifs later
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -33,7 +54,10 @@ export const Giphy = (props: { tag: string }) => {
           style={{ visibility: data ? undefined : 'hidden' }}
           className={classes.giphyImg}
           src={
-            data && data.fixed_height_downsampled_url.replace('http:', 'https:')
+            data &&
+            data.fixed_height_downsampled &&
+            data.fixed_height_downsampled.url &&
+            data.fixed_height_downsampled.url.replace('http:', 'https:')
           }
           title={data && data.title}
           alt={data && data.title}

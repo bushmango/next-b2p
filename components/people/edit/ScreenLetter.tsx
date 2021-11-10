@@ -1,19 +1,17 @@
 import l from 'lodash'
 import { DateTime } from 'luxon'
 import React from 'react'
-import { Card } from '../../../common/components/card/Card-sidecar'
-import { Icon, solidIcons } from '../../../common/components/icon/Icon-sidecar'
-import { TagButton } from '../../../common/components/tag-button/TagButton-sidecar'
-import { Spacer } from '../../spacer/Spacer-sidecar'
+import { Card } from '../../../common/components/card/Card'
+import { Icon, solidIcons } from '../../../common/components/icon/Icon'
+import { TagButton } from '../../../common/components/tag-button/TagButton'
+import { Spacer } from '../../spacer/Spacer'
 import { sosB2P } from '../sosB2P-sidecar'
 
 export const ScreenLetter = (props: { json: any }) => {
   let { json } = props
 
-  let {
-    totalUnreturnedPackagesThisYear,
-    totalScreensThisYear,
-  } = sosB2P.calcNumUnreturnedPackages(json)
+  let { totalUnreturnedPackagesThisYear, totalScreensThisYear } =
+    sosB2P.calcNumUnreturnedPackages(json)
 
   return (
     <Card title='Screen letter' minWidth='430px'>

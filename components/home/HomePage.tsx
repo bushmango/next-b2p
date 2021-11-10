@@ -1,9 +1,9 @@
 import React from 'react'
 import { InternalLink } from '../../common/components/internal-link/InternalLink'
-import { Layout } from '../layout/Layout-sidecar'
+import { Layout } from '../layout/Layout'
 import css from './Home.module.scss'
-import { Login, Logout } from '../login/LoginPage-sidecar'
-import { NewsBox } from '../news/NewsBox-sidecar'
+import { Login, Logout } from '../login/LoginPage'
+import { NewsBox } from '../news/NewsBox'
 import { sosUser } from '../account/sosUser-sidecar'
 
 export const HomePage = () => {

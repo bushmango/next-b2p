@@ -2,9 +2,9 @@ import React, { useRef } from 'react'
 
 import css from '../People.module.scss'
 import { IStateB2P } from '../sosB2P'
-import { Card } from '../../../common/components/card/Card-sidecar'
-import { Loader } from '../../../common/components/loader/Loader-sidecar'
-import { Input } from '../../../common/components/input/Input-sidecar'
+import { Card } from '../../../common/components/card/Card'
+import { Loader } from '../../../common/components/loader/Loader'
+import { Input } from '../../../common/components/input/Input'
 import { sosB2P } from '../sosB2P-sidecar'
 import l from 'lodash'
 

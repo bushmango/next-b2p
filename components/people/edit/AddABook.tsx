@@ -1,15 +1,14 @@
 import l from 'lodash'
 import React, { useRef } from 'react'
-import { Button } from '../../../common/components/button/Button-sidecar'
-import { Card } from '../../../common/components/card/Card-sidecar'
-import { Icon, solidIcons } from '../../../common/components/icon/Icon-sidecar'
-import { Input } from '../../../common/components/input/Input-sidecar'
-import { LinkButton } from '../../../common/components/link-button/LinkButton-sidecar'
+import { Button } from '../../../common/components/button/Button'
+import { Card } from '../../../common/components/card/Card'
+import { Icon, solidIcons } from '../../../common/components/icon/Icon'
+import { Input } from '../../../common/components/input/Input'
+import { TagButton } from '../../../common/components/tag-button/TagButton'
+import css from '../People.module.scss'
 import { IStateB2P, quickPrices } from '../sosB2P'
 import { sosB2P } from '../sosB2P-sidecar'
-import css from '../People.module.scss'
 import cssTable from './EditPersonDetails.module.scss'
-import { TagButton } from '../../../common/components/tag-button/TagButton-sidecar'
 
 export const AddABook = (props: { state: IStateB2P }) => {
   let { state } = props

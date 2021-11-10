@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import React from 'react'
-import { Icon, solidIcons } from '../../common/components/icon/Icon-sidecar'
+import { Icon, solidIcons } from '../../common/components/icon/Icon'
 import { browser } from '../../common/lib/browser/browser-sidecar'
 import css from './Redirect.module.scss'
 export const Redirect = (props: {}) => {

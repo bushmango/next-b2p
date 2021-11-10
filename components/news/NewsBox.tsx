@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from '../../common/components/card/Card-sidecar'
+import { Card } from '../../common/components/card/Card'
 // import { buildDateTime } from '@/config'
 
 export const NewsBox = () => {
@@ -9,6 +9,7 @@ export const NewsBox = () => {
       <div>
         Version 6 -- Move to NextJS Cloud
         <ul>
+          <li>11/9/2021 - Fix gifphy api update</li>
           <li>8/23/2021 - Update return address</li>
           <li>7/21/2020 - Add basic reporting functionality</li>
           <li>5/9/2020 - Release!</li>
