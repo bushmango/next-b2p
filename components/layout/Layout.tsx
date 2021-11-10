@@ -4,7 +4,7 @@ import { InternalLink } from '../../common/components/internal-link/InternalLink
 import { sosUser } from '../account/sosUser-sidecar'
 import { ClientOnly } from '../ClientOnly'
 import cssPrint from '../people/print/Print.module.scss'
-import { Footer } from './Footer-sidecar'
+import { Footer } from './Footer'
 import css from './Layout.module.scss'
 import { Redirect } from './Redirect'
 

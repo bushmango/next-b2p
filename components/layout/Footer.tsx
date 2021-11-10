@@ -1,7 +1,7 @@
 import React from 'react'
 
 import css from './Footer.module.scss'
-import { Spacer } from '../spacer/Spacer-sidecar'
+import { Spacer } from '../spacer/Spacer'
 
 export const Footer = () => {
   return (

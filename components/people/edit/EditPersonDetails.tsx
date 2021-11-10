@@ -1,12 +1,11 @@
 import React from 'react'
-import { Card } from '../../../common/components/card/Card-sidecar'
-import { Input } from '../../../common/components/input/Input-sidecar'
-import { Spacer } from '../../spacer/Spacer'
+import { Card } from '../../../common/components/card/Card'
+import { Input } from '../../../common/components/input/Input'
+import { l } from '../../../common/lib/lodash'
 import { IStateB2P } from '../sosB2P'
 import { sosB2P } from '../sosB2P-sidecar'
-import { fields } from './peopleFields'
-import { l } from '../../../common/lib/lodash'
 import css from './EditPersonDetails.module.scss'
+import { fields } from './peopleFields'
 export const EditPersonDetails = (props: { state: IStateB2P }) => {
   let { state } = props
   return (

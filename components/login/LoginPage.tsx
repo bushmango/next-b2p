@@ -1,16 +1,16 @@
 import React from 'react'
-import { Button } from '../../common/components/button/Button-sidecar'
-import { Giphy } from '../../common/components/giphy/Giphy-sidecar'
-import { Input } from '../../common/components/input/Input-sidecar'
+import { Button } from '../../common/components/button/Button'
+import { Giphy } from '../../common/components/giphy/Giphy'
+import { Input } from '../../common/components/input/Input'
 import { IStateUser } from '../account/sosUser'
 import { sosUser } from '../account/sosUser-sidecar'
 import { Layout } from '../layout/Layout'
 import { NewsBox } from '../news/NewsBox'
-import { Card } from '../../common/components/card/Card-sidecar'
+import { Card } from '../../common/components/card/Card'
 import { props } from 'ramda'
-import { Stacked } from '../../common/components/stacked/Stacked-sidecar'
+import { Stacked } from '../../common/components/stacked/Stacked'
 import { Spacer } from '../spacer/Spacer'
-import { AlignRight } from '../../common/components/align/AlignRight-sidecar'
+import { AlignRight } from '../../common/components/align/AlignRight'
 
 export const LoginPage = () => {
   let state = sosUser.useSubscribe()

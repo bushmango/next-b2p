@@ -1,7 +1,8 @@
 import { NextPage } from 'next'
 import * as React from 'react'
-import { PeopleEditPage } from '../../../components/people/PeopleEditPage-sidecar'
+
 import { useRouter } from 'next/router'
+import { PeopleEditPage } from '../../../components/people/edit/PeopleEditPage'
 
 const Page: NextPage = () => {
   const router = useRouter()

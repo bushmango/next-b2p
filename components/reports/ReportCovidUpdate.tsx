@@ -1,10 +1,9 @@
 import React from 'react'
 import { sosUser } from '../account/sosUser-sidecar'
-import { Layout } from '../layout/Layout-sidecar'
-import { sosB2P } from '../people/sosB2P-sidecar'
-import { sosAdmin } from '../admin/sosAdmin-sidecar'
-import { Button } from '../../common/components/button/Button'
 import { ApiTest } from '../admin/ApiTest'
+import { sosAdmin } from '../admin/sosAdmin-sidecar'
+import { Layout } from '../layout/Layout'
+import { sosB2P } from '../people/sosB2P-sidecar'
 
 export const ReportCovidUpdate = () => {
   if (!sosUser.ensureAdmin()) {
