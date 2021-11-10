@@ -2,7 +2,7 @@ import Head from 'next/head'
 import React from 'react'
 import { sosUser } from '../../account/sosUser-sidecar'
 import { Layout } from '../../layout/Layout'
-import { PeopleSearch } from '../PeopleSearch-sidecar'
+import { PeopleSearch } from './PeopleSearch'
 
 export const PeopleSearchPage = () => {
   if (!sosUser.ensureLoggedIn()) {
