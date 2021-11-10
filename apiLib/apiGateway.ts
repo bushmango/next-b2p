@@ -1,4 +1,4 @@
-import { apiRegister } from './api-sidecar'
+import { apiRegister } from './api'
 import { apiAccount } from './apiAccount-sidecar'
 import { apiPeople } from './apiPeople-sidecar'
 import { apiBooks } from './apiBooks-sidecar'
