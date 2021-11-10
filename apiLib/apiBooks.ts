@@ -1,4 +1,4 @@
-import { apiRegister } from './api-sidecar'
+import { apiRegister } from './api'
 import { postJson } from './lib/apiUtil'
 
 const books = require('google-books-search')
