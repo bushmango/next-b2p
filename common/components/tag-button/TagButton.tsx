@@ -1,6 +1,6 @@
 import css from './TagButton.module.scss'
 import React from 'react'
-import { Badge } from '../badge/Badge-sidecar'
+import { Badge } from '../badge/Badge'
 
 export const TagButton = (props: {
   children?: React.ReactNode
