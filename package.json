@@ -34,7 +34,7 @@
     "luxon": "2.1.1",
     "nanoid": "3.1.30",
     "next": "12.0.3",
-    "node-sass": "6.0.1",
+    "node-sass": "7.0.0",
     "pg": "8.7.1",
     "ramda": "0.27.1",
     "ramda-adjunct": "2.35.0",
