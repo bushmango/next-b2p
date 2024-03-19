@@ -7,6 +7,12 @@ export const NewsBox = () => {
     <Card title='News / Changelog'>
       {/* <div>Build: {buildDateTime}</div> */}
       <div>
+        Version 7 -- 2024 updates
+        <ul>
+          <li>3/19/2024 - Maintenance Update</li>
+        </ul>
+      </div>
+      <div>
         Version 6 -- Move to NextJS Cloud
         <ul>
           <li>11/9/2021 - Fix gifphy api update</li>
