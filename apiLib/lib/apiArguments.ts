@@ -21,7 +21,9 @@ export function getArgumentBoolean(req: NextApiRequest, key: string): boolean {
   return false
 }
 export function getArgumentString(req: NextApiRequest, key: string): string {
-  let arg = req.body[key] as string | null | undefined
+  let arg =
+    (req.body[key] as string | null | undefined) ||
+    (req.query[key] as string | null | undefined)
   return arg || ''
 }
 

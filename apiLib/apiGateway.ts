@@ -3,6 +3,7 @@ import { apiAccount } from './apiAccount-sidecar'
 import { apiPeople } from './apiPeople-sidecar'
 import { apiBooks } from './apiBooks-sidecar'
 import { apiReports } from './apiReports-sidecar'
+import { apiBackupDatabase } from './apiBackupDatabase-sidecar'
 
 export function registerAll() {
   apiRegister('/account/login', apiAccount.login)
@@ -15,4 +16,5 @@ export function registerAll() {
 
   apiReports.installAll()
   apiBooks.installAll()
+  apiBackupDatabase.installAll()
 }
