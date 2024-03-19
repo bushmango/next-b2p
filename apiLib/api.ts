@@ -1,19 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { registerAll } from './apiGateway'
 import { apiArguments } from './lib/apiArguments-sidecar'
+import { apiBackupDatabase } from './apiBackupDatabase-sidecar'
 
 type ActionFunction = (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => Promise<any>
-let paths: { [k: string]: ActionFunction } = {}
+let _paths: { [k: string]: ActionFunction } = {}
 export function apiRegister(path: string, action: ActionFunction) {
-  if (paths[path]) {
+  if (_paths[path]) {
     let err = `path ${path} is already registered`
     console.error(err)
     throw new Error(err)
   }
-  paths[path] = action
+  _paths[path] = action
 }
 
 apiRegister('/ping', async (req, res) => {
@@ -34,6 +35,13 @@ export async function gateway(req: NextApiRequest, res: NextApiResponse) {
     return
   }
 
+  if (path.startsWith('backup-database')) {
+    // TODO: make sure logged in
+    console.log('backup-database hit')
+    apiBackupDatabase.runReport_backupDatabase(req, res)
+    return
+  }
+
   if (!path.startsWith('/api')) {
     res.status(200)
     res.send('no-api')
@@ -41,10 +49,10 @@ export async function gateway(req: NextApiRequest, res: NextApiResponse) {
   }
   path = path.substring('/api'.length)
 
-  let pathAction = paths[path]
+  let pathAction = _paths[path]
   if (!pathAction) {
     res.status(404)
-    res.send('404')
+    res.send('404-' + path)
     return
   }
 
