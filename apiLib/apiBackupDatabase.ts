@@ -54,7 +54,10 @@ export async function runReport_backupDatabase(
   if (sendAsZip) {
     var zip = new AdmZip()
     // add local file
-    zip.addFile(name + '.json', Buffer.from(JSON.stringify(results), 'utf8'))
+    zip.addFile(
+      name + '.json',
+      Buffer.from(JSON.stringify(results, null, 2), 'utf8'),
+    )
     // get everything as a buffer
     var zipFileContents = zip.toBuffer()
     const fileName = name + '.zip'
