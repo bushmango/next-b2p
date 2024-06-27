@@ -1,2 +1,2 @@
-export const header: string;
-export const headerVertical: string;
+export declare const header: string
+export declare const headerVertical: string

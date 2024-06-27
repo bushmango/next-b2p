@@ -1,5 +1,5 @@
-export const inputText: string;
-export const iconLeft: string;
-export const notResizable: string;
-export const borderless: string;
-export const readOnly: string;
+export declare const borderless: string
+export declare const iconLeft: string
+export declare const inputText: string
+export declare const notResizable: string
+export declare const readOnly: string

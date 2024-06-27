@@ -1,1 +1,1 @@
-export const spacer: string;
+export declare const spacer: string

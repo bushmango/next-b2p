@@ -1,1 +1,1 @@
-export const iconButton: string;
+export declare const iconButton: string

@@ -1,1 +1,1 @@
-export const active: string;
+export declare const active: string
