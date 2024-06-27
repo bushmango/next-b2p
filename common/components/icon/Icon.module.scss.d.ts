@@ -1,3 +1,3 @@
-export const iconButton: string;
-export const inlineIcon: string;
-export const defaultStyle: string;
+export declare const defaultStyle: string
+export declare const iconButton: string
+export declare const inlineIcon: string

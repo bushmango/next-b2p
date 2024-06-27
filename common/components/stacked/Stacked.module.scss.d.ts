@@ -1,1 +1,1 @@
-export const stackedText: string;
+export declare const stackedText: string

@@ -48,6 +48,11 @@ export const Layout = (props: {
                     People Search
                   </InternalLink>
                 </div>
+                <div className={css.link}>
+                  <InternalLink href='/admin'>
+                    Admin (Database Backup)
+                  </InternalLink>
+                </div>
                 {/* <div className={classes.link}>
               <RazLink to='/books/search'>Book Search</RazLink>
             </div> */}

@@ -1,5 +1,5 @@
-export const links: string;
-export const link: string;
-export const body: string;
-export const headerBar: string;
-export const title: string;
+export declare const body: string
+export declare const headerBar: string
+export declare const link: string
+export declare const links: string
+export declare const title: string

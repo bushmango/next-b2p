@@ -1,1 +1,1 @@
-export const footer: string;
+export declare const footer: string

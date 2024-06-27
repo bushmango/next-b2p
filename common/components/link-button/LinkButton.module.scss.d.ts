@@ -1,1 +1,1 @@
-export const linkButton: string;
+export declare const linkButton: string

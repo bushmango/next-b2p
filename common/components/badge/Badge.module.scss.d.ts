@@ -1,2 +1,2 @@
-export const badge: string;
-export const active: string;
+export declare const active: string
+export declare const badge: string

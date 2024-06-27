@@ -1,8 +1,8 @@
-export const printable: string;
-export const notPrintable: string;
-export const printLayout: string;
-export const printItem: string;
-export const mediaMail: string;
-export const logo: string;
-export const tablePacking: string;
-export const tableItems: string;
+export declare const logo: string
+export declare const mediaMail: string
+export declare const notPrintable: string
+export declare const printable: string
+export declare const printItem: string
+export declare const printLayout: string
+export declare const tableItems: string
+export declare const tablePacking: string

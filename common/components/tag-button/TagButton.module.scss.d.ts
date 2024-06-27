@@ -1,1 +1,1 @@
-export const tagButton: string;
+export declare const tagButton: string

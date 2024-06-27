@@ -1,1 +1,1 @@
-export const alignRight: string;
+export declare const alignRight: string

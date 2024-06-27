@@ -1,11 +1,11 @@
-export const layout: string;
-export const toolbarLayout: string;
-export const toolbarItem: string;
-export const toolbarSearch: string;
-export const icon: string;
-export const quickPriceLayout: string;
-export const quickPriceItem: string;
-export const packageSeparator: string;
-export const bookSearchResult: string;
-export const bookSearchThumbnail: string;
-export const tableSearch: string;
+export declare const bookSearchResult: string
+export declare const bookSearchThumbnail: string
+export declare const icon: string
+export declare const layout: string
+export declare const packageSeparator: string
+export declare const quickPriceItem: string
+export declare const quickPriceLayout: string
+export declare const tableSearch: string
+export declare const toolbarItem: string
+export declare const toolbarLayout: string
+export declare const toolbarSearch: string

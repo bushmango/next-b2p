@@ -1,1 +1,1 @@
-export const redirect: string;
+export declare const redirect: string

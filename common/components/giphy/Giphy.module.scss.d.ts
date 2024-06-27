@@ -1,2 +1,2 @@
-export const giphy: string;
-export const giphyImg: string;
+export declare const giphy: string
+export declare const giphyImg: string
