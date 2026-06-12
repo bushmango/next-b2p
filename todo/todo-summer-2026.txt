@@ -1,9 +1,16 @@
 
 
+https://docs.google.com/document/d/1--ZF0x45-DxIlwueOmYQRqnHK5DS-D2ZFa9EdLkNnIU/edit?tab=t.0
+
+M,T,Sa (10-3) are big database days
+
 from Stevie:
 
 - db migration
 - fix gliphy
+
+- possibly add more filtering
+- show # of results in search and show more than 25 -- paging?
 
 - do we want a record of institutions instead of repeating for each person?
 pros: one space, backed up, integrated
@@ -16,15 +23,26 @@ cons: fragile, can get out of sync, multiple sources of truth, different backup
 from Katherine:
 
 - sometimes the book search doesn't work? do a check on the code
+-- add diagnostic info if the book search doesn't work
+- api limits?
+
+- simple report that shows packages sent by month
+- report for packages screened by month
+
 
 
 from Debbie:
 
+>> when a package gets returned, add a field for return reason?
+in the packages panel "packages sent to this person
 
 
 E - Bigger "Notes" box so it's easier to read
-? - Save history of screening dates (currently - deletes everything if you hit the button twice in a row, easy to do by accident)
+E - Save history of screening dates (currently - deletes everything if you hit the button twice in a row, easy to do by accident)
+[make screened dates an array? is this the screen letter box?
+also only clear the current day, not the whole history?]
 E - Different color icons for screening and packages in the search display?
+[also align them consistently]
 E- Ability to show more than the top N search results
 E - Something for saving notes about rejections/returns (maybe another text field associated with each
  package that doesn't get printed on the invoice? or ability to save a list of Notes instead of just 
@@ -33,6 +51,7 @@ M - For end-of-year packages: December letters are often screened and filled in 
 manually back-dated so that the package count isn't off. Maybe a button that resets a screening/package 
 date to "12/31/<prev_year>"? 
 M - Option to add our address to the invoice next to Room's (not sure if we want this to be default at this time)
+[toggle between them? just replace with B2P location? wait for response from Debbie and Katherine]
 M - Field(s) for paper mailing address
 
 Bigger dreams:
@@ -49,3 +68,20 @@ a paper mailing address for state prisons in that state when we load up someone'
 - Very big dream, unsure if feasible or even desirable: Some kind of integration with our (live) 
 Restrictions spreadsheet to help us browse restrictions for the facility/others in the area.
 [merge restrictions spreadsheet into institution/facility database?]
+
+
+- insitutions sometimes have separate addresses for mail and packages
+- need to separately track 
+
+- how hard would it be to reconcile the existing people
+- state level restrictions table - simple
+- facility type (state/federal/county) really matters for restrictions
+
+- how to extract state level restrictions?
+- important to be able to look at nearby
+
+https://docs.google.com/document/d/1otfcWXMnJPp-C4WEr7LPzAfXTzaYpmWfJUO-9prKt3g/edit?tab=t.0#heading=h.hjxg5plemoem
+https://docs.google.com/document/d/1--ZF0x45-DxIlwueOmYQRqnHK5DS-D2ZFa9EdLkNnIU/edit?tab=t.0
+https://docs.google.com/spreadsheets/d/1TBbfFN2bh7EUJOv_xHxrJn116g5dZCUo1f7HJbtbc94/edit?gid=105947543#gid=105947543
+
+saturday the 27th 10-6 b2p database work day

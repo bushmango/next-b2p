@@ -1,0 +1,225 @@
+Security audit: b2p application
+Date: 2026-06-12
+Scope: Local static review of the Next.js app, API routes, database access, backup script, repo config, and yarn audit output.
+
+Executive summary
+- The highest-risk issue is the custom authentication model: a static bearer token is returned to the browser, stored in localStorage, and reused indefinitely.
+- Authorization is too coarse: components/account/sosUser.ts treats every logged-in user as admin, while admin APIs expose database backup/export behavior.
+- The backup export endpoint sends sensitive database records through a GET URL containing the token, which can leak through browser history, server logs, proxies, referer headers, and screenshots.
+- The database queries mostly use Knex query builders rather than raw SQL string concatenation, so SQL injection risk appears lower than the auth/data-exposure risks.
+- The app is on an old framework/runtime stack: next 12.0.3, react 17.0.2, knex 0.21.1, TypeScript 4.4.4. yarn audit currently reports 21 advisories.
+- There is no next.config.* or deployment config in the repo, and no visible app-level security response headers.
+
+Critical findings
+
+1. Static browser-visible bearer token grants API access
+- Evidence:
+  - apiLib/apiAccount.ts:8 reads LGBTB2P_USERNAME, LGBTB2P_PASSWORD, and LGBTB2P_TOKEN from process.env.
+  - apiLib/apiAccount.ts:38-42 returns LGBTB2P_TOKEN to the client after username/password match.
+  - apiLib/apiAccount.ts:17-19 accepts that same token as the sole authentication proof.
+  - common/lib/request/apiRequest.ts:25-43 stores the token in localStorage under api:authToken.
+- Risk:
+  - Any XSS, browser extension, shared computer, log capture, or accidental token disclosure gives persistent API access until the global token is rotated.
+  - There is no expiry, no per-user session, no rotation, no revocation list, and no server-side session invalidation.
+- Recommended fix:
+  - Replace static token auth with server-issued sessions stored in Secure, HttpOnly, SameSite cookies.
+  - Add token/session expiry and rotation.
+  - Store password material through a real identity provider or a password hash, not raw env var comparison.
+  - Treat current LGBTB2P_TOKEN as compromised if it has ever been exposed in URLs, logs, screenshots, or git history.
+- Priority: P0.
+
+2. Admin authorization is effectively "any logged-in user"
+- Evidence:
+  - components/account/sosUser.ts:38-40 has ensureAdmin() return ensureLoggedIn() with comment "All users admins for now".
+  - components/admin/AdminPage.tsx:12-13 only hides the client page when ensureAdmin() fails.
+  - apiLib/apiGateway.ts and apiLib/apiBackupDatabase.ts enforce token validity but do not check an admin role.
+- Risk:
+  - If the app later gains non-admin users, they will already have access to admin behavior unless every path is reworked.
+  - Client-side hiding is not authorization. Attackers can call the API route directly.
+- Recommended fix:
+  - Add explicit server-side role claims or permissions to the authenticated user.
+  - Make admin APIs require user.role === "admin" or a narrower permission such as "database:export".
+  - Keep UI checks only as convenience; enforce authorization in apiLib.
+- Priority: P0.
+
+3. Backup database endpoint leaks token through URL and exports sensitive records
+- Evidence:
+  - components/admin/AdminPage.tsx:64-72 creates a GET URL containing path=backup-database, min, max, group, and token.
+  - apiLib/api.ts:38-42 special-cases path.startsWith('backup-database') outside the normal registered API path flow.
+  - apiLib/apiBackupDatabase.ts:19-23 reads the token from req.query and checks it.
+  - apiLib/apiBackupDatabase.ts:39-69 selects all records for the organization, includes deleted data, zips JSON, and returns it.
+- Risk:
+  - Tokens in URLs commonly appear in browser history, server access logs, analytics, reverse proxies, referer headers, and support screenshots.
+  - The endpoint can export the whole b2p_people_v5 data set, including deleted records. That likely contains sensitive personally identifiable information.
+  - min/max parsing is not bounded; large ranges can cause memory pressure by building a full JSON string and ZIP buffer in memory.
+- Recommended fix:
+  - Remove token from query string. Use POST with the authenticated session cookie or an Authorization header.
+  - Require explicit admin/export permission server-side.
+  - Add audit logging for export attempts: user, timestamp, range, row count, IP/request id.
+  - Bound min/max and enforce a maximum export size.
+  - Stream export output where possible instead of buffering the whole ZIP in memory.
+  - Consider disabling in-app full database export in production and use controlled operational backups instead.
+- Priority: P0.
+
+High findings
+
+4. No CSRF strategy documented or implemented
+- Evidence:
+  - API requests use JSON POSTs with bearer token in the body: common/lib/request/apiRequest.ts:71-85.
+  - There are no CSRF tokens, origin checks, Fetch Metadata checks, or SameSite cookie settings in the repo.
+- Current nuance:
+  - Because auth is currently a bearer token in localStorage, classic cookie-driven CSRF is less direct than it would be with automatic session cookies.
+  - If the app moves to cookie sessions, CSRF protection becomes mandatory for state-changing requests.
+- Recommended fix:
+  - When moving to cookies, add SameSite=Lax or Strict, Secure, HttpOnly cookies.
+  - Add CSRF tokens or Fetch Metadata / Origin validation for state-changing endpoints.
+  - Reject state-changing GET requests.
+- Priority: P1.
+
+5. Sensitive database records are logged to the browser console
+- Evidence:
+  - common/lib/request/apiRequest.ts:102 logs successful API response state and JSON.
+  - components/people/sosB2P.ts logs fetched result data and changes.
+  - components/admin/sosAdmin.ts logs processed backup/report data and CSV content.
+- Risk:
+  - Person records, addresses, notes, package history, and exports may remain visible in browser developer tools, remote support sessions, or client-side log collectors.
+- Recommended fix:
+  - Remove response-body console logging for production.
+  - Add a tiny logging wrapper that strips sensitive data and gates verbose logs behind a local dev flag.
+- Priority: P1.
+
+6. No visible security response headers
+- Evidence:
+  - No next.config.* file found.
+  - Search found no Content-Security-Policy, Strict-Transport-Security, X-Frame-Options/frame-ancestors, Referrer-Policy, Permissions-Policy, or X-Content-Type-Options configuration.
+- Risk:
+  - Missing headers increase impact of XSS, clickjacking, MIME confusion, referrer leakage, and mixed content mistakes.
+- Recommended fix:
+  - Add headers in next.config.js or the deployment layer:
+    - Content-Security-Policy with a realistic script/style policy.
+    - frame-ancestors 'none' or trusted origins only.
+    - X-Content-Type-Options: nosniff.
+    - Referrer-Policy: strict-origin-when-cross-origin or no-referrer where appropriate.
+    - Permissions-Policy denying unneeded browser features.
+    - Strict-Transport-Security at the TLS edge if always HTTPS.
+- Priority: P1.
+
+7. Database connection lacks explicit SSL configuration
+- Evidence:
+  - apiLib/lib/databaseB2P.ts:5-10 configures database, host, user, and password only.
+  - The new scripts/pg-dump-backup.js defaults PGSSLMODE=require, but the app's Knex connection does not show equivalent SSL enforcement.
+- Risk:
+  - If the deployment/database client does not enforce TLS elsewhere, database credentials and data can transit without the expected AWS/RDS TLS posture.
+- Recommended fix:
+  - Add explicit SSL configuration for production DB connections.
+  - Verify AWS/RDS certificate validation requirements for the deployed environment.
+- Priority: P1.
+
+8. Dependency and framework stack is stale
+- Evidence:
+  - package.json uses next 12.0.3, react 17.0.2, TypeScript 4.4.4, knex 0.21.1, @zeit/next-sass.
+  - yarn audit --groups dependencies --groups devDependencies reported 21 vulnerabilities: 1 low, 6 moderate, 14 high.
+  - Audit examples included ansi-regex, minimatch, braces, picomatch, postcss, and esbuild advisories, mostly through typed-scss-modules and pretty-quick paths.
+- Risk:
+  - Some advisories are dev-tooling-only, but the stale stack increases exposure to known framework and supply-chain bugs and makes patching harder.
+- Recommended fix:
+  - Execute the Next.js upgrade plan in todo/todo-nextjs-upgrade.txt.
+  - Upgrade or replace typed-scss-modules and pretty-quick dependency paths.
+  - Remove @zeit/next-sass during the Next upgrade.
+  - Re-run yarn audit after upgrades and document remaining accepted risks.
+- Priority: P1.
+
+Medium findings
+
+9. API returns 200 for auth and method failures
+- Evidence:
+  - apiLib/lib/apiUtil.ts:10-22 returns status 200 for non-POST and not-logged-in cases.
+  - apiLib/apiBackupDatabase.ts:24-27 returns status 200 for not-logged-in.
+- Risk:
+  - Monitoring, caches, clients, and security tooling cannot distinguish success from authentication or method failure.
+- Recommended fix:
+  - Use 401 for unauthenticated, 403 for unauthorized, 405 for wrong method, 404 for unknown path, and 400 for validation failures.
+- Priority: P2.
+
+10. Input validation is weak around limits, ranges, and JSON shapes
+- Evidence:
+  - apiLib/apiPeople.ts:32-46 accepts caller-provided limit, then passes it into query.limit(limit).
+  - apiLib/apiPeople.ts:112-128 accepts arbitrary json and updates the stored record.
+  - apiLib/apiBackupDatabase.ts:20-45 parses min/max/group from query strings, then uses offset/limit without validation bounds.
+  - apiLib/lib/apiArguments.ts parses JSON without schema validation.
+- Risk:
+  - Bad inputs can cause large queries, oversized records, unexpected object shapes, application errors, or data quality damage.
+- Recommended fix:
+  - Add schema validation for each API body.
+  - Clamp search/export limits.
+  - Validate Guid ownership and required fields before update.
+  - Reject NaN/negative min/max values and cap export windows.
+- Priority: P2.
+
+11. target="_blank" links omit rel="noopener noreferrer"
+- Evidence:
+  - components/about/AboutPage.tsx:10 and 19 link to an external site with target="_blank" and no rel.
+- Risk:
+  - Older browser behavior can expose window.opener to the opened page.
+- Recommended fix:
+  - Add rel="noopener noreferrer" to external target="_blank" links.
+- Priority: P2.
+
+12. Mixed package lock files create supply-chain ambiguity
+- Evidence:
+  - git tracks both package-lock.json and yarn.lock.
+  - package.json scripts are yarn-oriented.
+- Risk:
+  - Different developers or CI/deploy environments may install different dependency trees.
+- Recommended fix:
+  - Pick one package manager. This repo appears to be yarn-based.
+  - Remove package-lock.json if deployment does not require npm.
+  - Document package-manager ownership in README.
+- Priority: P2.
+
+13. Local backup dumps are sensitive artifacts
+- Evidence:
+  - scripts/pg-dump-backup.js writes database dumps to backups/.
+  - .gitignore ignores backups/.
+- Risk:
+  - Git ignore prevents accidental commits, but dumps remain unencrypted at rest on local machines.
+- Recommended fix:
+  - Treat backups/*.dump as sensitive.
+  - Store backups in encrypted storage or encrypt after creation.
+  - Define retention and deletion rules.
+  - Avoid sharing dumps through chat, email, or issue trackers.
+- Priority: P2.
+
+Positive observations
+- No dangerouslySetInnerHTML usage found.
+- No obvious child_process usage in the app runtime; only scripts/pg-dump-backup.js uses spawn with shell:false.
+- Most database access uses Knex query builders rather than raw SQL string concatenation.
+- .gitignore now ignores .env.local and backups/.
+- git ls-files on 2026-06-12 showed .env.local is not tracked in the current index.
+
+Immediate remediation checklist
+1. Rotate LGBTB2P_TOKEN, LGBTB2P_PASSWORD, DB_PASSWORD, and any credentials that were ever present in .env.local if that file was committed historically.
+2. Remove token-in-query backup flow. Replace with authenticated POST and server-side admin/export permission.
+3. Replace static token/localStorage auth with HttpOnly cookie sessions and expiry.
+4. Add server-side authorization checks for admin/export/rebuild operations.
+5. Remove sensitive console logging from client code.
+6. Add security headers via next.config.js or deployment layer.
+7. Clamp all API limits and validate request bodies with schemas.
+8. Upgrade Next/React/dependency stack and re-run yarn audit.
+9. Add DB SSL enforcement to the app's Knex config.
+10. Add rel="noopener noreferrer" to external target="_blank" links.
+
+Commands run
+- rg-based static searches across pages, apiLib, common, components, lib, scripts.
+- yarn audit --groups dependencies --groups devDependencies
+- git ls-files -- .env.local .env .envExample package-lock.json yarn.lock
+
+External guidance referenced
+- OWASP Top 10: https://owasp.org/Top10/
+- OWASP CSRF Prevention Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+- OWASP Authentication Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+
+Notes and assumptions
+- This is a code and dependency audit, not a live penetration test.
+- I did not run the app against production services or attempt exploit traffic.
+- I did not inspect git history for prior secret exposure. If .env.local ever contained real secrets and was pushed, assume those secrets need rotation even if the current index no longer tracks the file.
