@@ -2,5 +2,7 @@
 .next
 yarn-error.log
 node_modules/
+backups/
 
 .env
+.env.local

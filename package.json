@@ -11,7 +11,8 @@
     "dev": "next -p 3001",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "db:dump": "node scripts/pg-dump-backup.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.36",

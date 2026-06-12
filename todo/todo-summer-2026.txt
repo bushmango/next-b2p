@@ -1,0 +1,51 @@
+
+
+from Stevie:
+
+- db migration
+- fix gliphy
+
+- do we want a record of institutions instead of repeating for each person?
+pros: one space, backed up, integrated
+cons: not as flexible as a spreadsheet
+
+- could possibly pull from spreadsheet
+pros: already have spreadsheet
+cons: fragile, can get out of sync, multiple sources of truth, different backup
+
+from Katherine:
+
+- sometimes the book search doesn't work? do a check on the code
+
+
+from Debbie:
+
+
+
+E - Bigger "Notes" box so it's easier to read
+? - Save history of screening dates (currently - deletes everything if you hit the button twice in a row, easy to do by accident)
+E - Different color icons for screening and packages in the search display?
+E- Ability to show more than the top N search results
+E - Something for saving notes about rejections/returns (maybe another text field associated with each
+ package that doesn't get printed on the invoice? or ability to save a list of Notes instead of just 
+ having one text field that gets overwritten?).
+M - For end-of-year packages: December letters are often screened and filled in January and need to be 
+manually back-dated so that the package count isn't off. Maybe a button that resets a screening/package 
+date to "12/31/<prev_year>"? 
+M - Option to add our address to the invoice next to Room's (not sure if we want this to be default at this time)
+M - Field(s) for paper mailing address
+
+Bigger dreams:
+? - Something else to assist with remembering which facilities have separate addresses for paper mail 
+and packages - this changes frequently. like, if all of some state goes to mail scanning, and we 
+update that info somewhere, it would be helpful if the database could give a warning and/or suggest 
+a paper mailing address for state prisons in that state when we load up someone's record.
+[is this based on State always/usually?]
+
+? - Likewise, option to either manually enter package address, or search for address for a facility
+ either from a maps API or from a list that we upload.
+[create a new institution/facility database?]
+
+- Very big dream, unsure if feasible or even desirable: Some kind of integration with our (live) 
+Restrictions spreadsheet to help us browse restrictions for the facility/others in the area.
+[merge restrictions spreadsheet into institution/facility database?]

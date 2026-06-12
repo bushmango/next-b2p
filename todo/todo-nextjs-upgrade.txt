@@ -1,0 +1,170 @@
+Plan: Upgrade b2p from Next.js 12 to latest Next.js
+Date prepared: 2026-06-12
+
+Current confirmed baseline
+- Repo: C:\dev2023\next-b2p
+- Current app stack from package.json:
+  - next 12.0.3
+  - react/react-dom 17.0.2
+  - typescript 4.4.4
+  - @types/react 17.0.34, @types/react-dom 17.0.11, @types/node 16.11.7
+  - sass present, @zeit/next-sass still present
+  - yarn.lock and package-lock.json both exist
+- Latest package versions confirmed with yarn info on 2026-06-12:
+  - next 16.2.9
+  - react 19.2.7
+- Runtime on this machine:
+  - node v24.14.1
+  - yarn 1.22.21
+- App shape:
+  - Pages Router app only: pages/, pages/api/api.ts, pages/_app.tsx
+  - No next.config.* found
+  - No app/ directory found
+  - No getStaticProps/getServerSideProps/getInitialProps usage found
+  - Uses next/router, next/head, and a legacy next/link wrapper that renders <Link><a>...</a></Link>
+  - Global Sass import in pages/_app.tsx: ../components/App.scss
+  - Sass modules and generated *.module.scss.d.ts files are used
+- Baseline validation before upgrade:
+  - yarn type-check passes
+  - yarn build passes on Next 12.0.3
+  - Build warning: no ESLint configuration detected
+  - Build warning: Browserslist/caniuse-lite data is outdated
+
+Decision log from grill-me review
+- Question: Should this upgrade also migrate from Pages Router to App Router?
+  Recommended answer: No. Keep Pages Router for this upgrade. The repo is a functioning Pages Router app and the requested goal is the Next.js version upgrade. App Router migration should be a later, separate project.
+- Question: Should this be a direct jump from Next 12 to Next 16 or staged through majors?
+  Recommended answer: Stage the work by major compatibility gates, even if package.json is updated once. Validate the breaking-change classes for Next 13, 14, 15, and 16 explicitly.
+- Question: Should React be upgraded with Next?
+  Recommended answer: Yes. Latest Next 16 requires the modern React line, and Next 15 made React 19 the minimum. Upgrade react, react-dom, and matching @types packages together.
+- Question: Should yarn or npm own the lockfile?
+  Recommended answer: Use yarn because the scripts and prior workflow are yarn-based. Remove package-lock.json in the upgrade branch after confirming it is not intentionally maintained by CI.
+- Question: Should Turbopack be used immediately?
+  Recommended answer: Start with the default Next 16 behavior in development, but add a quick fallback path to test webpack if Turbopack exposes Sass or module-resolution issues.
+- Question: Should linting be introduced as part of this?
+  Recommended answer: Add explicit ESLint only if the team wants a lint gate now. Next 16 removes next lint and next build no longer runs linting automatically, so linting is separate from the core upgrade.
+
+Primary risks to investigate
+- Legacy next/link usage:
+  - common/components/internal-link/InternalLink.tsx currently renders <Link><a>...</a></Link>.
+  - Modern Next versions changed Link behavior. Expect either a codemod or a manual update to move className and handlers onto Link, or use legacyBehavior if a temporary compatibility step is needed.
+- React 19 compatibility:
+  - Update React types with React itself.
+  - Search for old React APIs after installing, especially implicit children assumptions, defaultProps on function components, legacy context, ReactDOM.render, findDOMNode, and third-party packages with React 17-era peer ranges.
+- Node/runtime compatibility:
+  - Local node v24 is new enough for current Next, but CI/deploy Node version must be checked and pinned before merging.
+  - Next 14 raised the floor to Node 18.17; Next 16 has a newer supported runtime line. Confirm deployment Node matches official Next 16 installation requirements.
+- Sass:
+  - Remove @zeit/next-sass. Next has built-in Sass support and the old plugin is obsolete.
+  - Validate Sass modules and global App.scss under the newer Sass loader. Next 16 notes modern Sass API changes.
+- API route/server dependencies:
+  - pages/api/api.ts imports server-side apiLib code using knex, pg, adm-zip, and external APIs. Confirm the production server bundle can still resolve these after Next changes.
+- Fetch:
+  - common/lib/request/apiRequest.ts imports isomorphic-unfetch. Modern Node and Next provide fetch, but do not remove the dependency until runtime behavior is tested in browser and API paths.
+- TypeScript:
+  - TypeScript 4.4 is too old for the current Next/React type surface. Upgrade to current TypeScript with @types/node, @types/react, and @types/react-dom.
+- Mixed lockfiles:
+  - Both yarn.lock and package-lock.json exist. This can cause different dependency trees between local and CI if CI uses npm.
+
+Execution plan
+1. Create an upgrade branch
+   - Branch name: codex/nextjs-16-upgrade
+   - Keep the first commit limited to dependency/config changes and mechanical codemods where possible.
+
+2. Confirm CI/deploy assumptions before dependency changes
+   - Find the deployment target and CI config, if any.
+   - Confirm Node version used by deployment.
+   - If no CI config exists, add a minimal documented local validation checklist rather than inventing CI in this upgrade.
+
+3. Snapshot the baseline
+   - Keep the current successful output of:
+     - yarn type-check
+     - yarn build
+   - Record the current build route list and warnings so post-upgrade differences are deliberate.
+
+4. Run official Next codemods in a controlled way
+   - Prefer the official upgrade codemod:
+     - yarn dlx @next/codemod@canary upgrade latest
+   - Review every changed file.
+   - If the codemod is too broad or fails, run targeted codemods and do the dependency update manually.
+
+5. Update dependencies
+   - Runtime dependencies:
+     - next@latest
+     - react@latest
+     - react-dom@latest
+   - Development/type dependencies:
+     - typescript@latest
+     - @types/react@latest
+     - @types/react-dom@latest
+     - @types/node@latest
+   - Remove:
+     - @zeit/next-sass
+   - Reconsider after tests, but do not remove in the same first pass:
+     - isomorphic-unfetch
+     - old third-party UI/runtime packages with React peer warnings
+
+6. Normalize package-manager ownership
+   - Keep yarn.lock as the source of truth.
+   - Remove package-lock.json if no CI/deploy process requires npm.
+   - Run yarn install and inspect peer dependency warnings.
+
+7. Fix compile-time breakages
+   - Run yarn type-check.
+   - Fix TypeScript errors from React 19 and newer Next types.
+   - Update next/link wrapper if required.
+   - Check any generated *.module.scss.d.ts workflows still work with typed-scss-modules.
+
+8. Fix build-time breakages
+   - Run yarn build.
+   - If Turbopack or Sass behavior creates a development-only issue, test both:
+     - yarn dev
+     - next dev --webpack or the current official webpack opt-out for Next 16
+   - Do not add a next.config file unless a specific compatibility setting is needed.
+
+9. Runtime smoke test
+   - Start the app on port 3001 with yarn dev.
+   - Smoke-test:
+     - /
+     - /about
+     - /news
+     - /login
+     - /admin
+     - /people/search
+     - /people/edit/[known pid] if test data exists
+     - /reports/covid-update
+     - /api/api with representative requests from the app
+   - Validate browser console is clean enough to distinguish new warnings from pre-existing ones.
+
+10. Decide on linting separately
+   - Since Next 16 removed next lint and no ESLint config currently exists, do not block the framework upgrade on lint setup unless the team wants linting added now.
+   - If adding lint:
+     - add eslint and eslint-config-next
+     - create eslint.config.mjs
+     - add scripts: lint, lint:fix
+
+11. Cleanup after the app is green
+   - Remove unused compatibility dependencies only after runtime validation.
+   - Consider replacing isomorphic-unfetch with native fetch in a separate cleanup commit.
+   - Update README with supported Node version and package manager.
+   - Re-run:
+     - yarn type-check
+     - yarn build
+     - yarn css
+
+Acceptance criteria
+- package.json uses latest stable Next/React packages confirmed at implementation time.
+- yarn.lock is updated and package-lock.json is either intentionally removed or explicitly justified.
+- No @zeit/next-sass remains.
+- yarn type-check passes.
+- yarn build passes.
+- yarn css passes or the Sass type-generation workflow is intentionally updated.
+- The app starts locally on port 3001.
+- Core pages and the API route smoke tests pass.
+- README or a todo note records the required Node version and package manager.
+
+References checked
+- Next.js 16 upgrade guide: https://nextjs.org/docs/app/guides/upgrading/version-16
+- Next.js 15 upgrade guide: https://nextjs.org/docs/app/guides/upgrading/version-15
+- Next.js 14 upgrade guide: https://nextjs.org/docs/app/guides/upgrading/version-14
+- Next.js installation/linting docs: https://nextjs.org/docs/app/getting-started/installation
