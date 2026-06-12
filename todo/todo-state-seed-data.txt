@@ -1,0 +1,90 @@
+State,Paper mail,Packages
+Arkansas (AR),"Inmate’s Name and ADC Number
+ARDOC
+P.O. 25918
+Tampa, FL 33622",Facility address given in request letter
+Arizona (AZ),"Full First and Last Name + ADCRR Number
+Prison Complex, Assigned Unit
+PO Box 211309
+Dallas, TX 75211","Full First and Last Name, ID number
+Prison Complex, Assigned Unit
+801 E Jefferson Street
+Phoenix, AZ 85034"
+CA - Orange County Jail,"Smart Communications/Orange County Jail
+Last name, First name
+ID Number
+PO Box 9101
+Seminole, FL 3375-9174",Facility address given in request letter
+CA - Contra Costa County,"Inmate Name – Booking Number
+Facility Name - 4 Digit Code
+PO Box 96777
+Las Vegas, NV 89193",Facility address given in request letter
+CA - Kern Co Sheriff (Bakersfield),"Name, ID 
+C/O Securus Digital Mail Center
+PO Box 25397
+Tampa, FL 33622",Not allowed? Unsure
+CA - Mendocino Co Sheriff,"Facility Name, California
+Last name, first name, ID number
+PO Box 247
+Phoenix, MD 21131",Facility address given in request letter
+Delaware (DE),"Last name, first name, ID number
+Delaware DOC - 1101
+PO Box 96777
+Las Vegas, NV 89193",Facility address given in request letter
+"Florida (FL) - Federal
+SEND POSTCARD","Send like a normal postcard
+Facility address given in request letter",Facility address given in request letter
+"Florida (FL) (State prison)
+NO POSTCARDS
+NO PENPALS","Last name, first name, ID number
+PO Box 23608
+Tampa, FL 33623",Facility address given in request letter
+Iowa (IA),"Last name, first name, ID number
+Facility
+PO Box 96777
+Las Vegas, NV 89193",Facility address given in request letter
+Minnesota (MN),"First Name, Last name, ID number
+MCF-facility name, Minnesota (do not abbreviate Minnesota)
+P.O. Box 247
+Phoenix, MD 21131",Facility address given in request letter
+Missouri (MO),"Last name, first name, ID number
+℅ Digital Mail Center - Missouri DOC
+PO Box 25678
+Tampa, FL 33622",Facility address given in request letter
+Montana (MT),"Full Facility Name, Montana
+Inmate Full First and Last Name, ID
+PO Box 247
+Phoenix, MD 21131",Facility address given in request letter
+North Carolina (NC),"First Name Last name #ID number
+Institution Name, not abbreviated
+PO Box 247
+Phoenix, MD 21131",Facility address given in request letter
+Nevada (NV),Can send paper in package,Send to prison directly
+Pennsylvania (PA),"Smart Communications/PA DOC
+Last name, first name, ID number
+SCI-Facility
+PO Box 33028
+St Petersburg, FL 33733","Last name, first name, ID number
+Security Processing Center
+268 Bricker Road
+Bellefonte, PA 16823-1667"
+Utah (UT),"Utah State Correctional Facility 
+Name – Inmate ID #
+PO Box 165300
+Salt Lake City, UT 84116
+
+
+Central Utah Correctional Facility 
+Name – Inmate ID #
+PO Box 550
+Gunnison, UT 84634",Send to prison directly
+Virginia (VA),Can send paper in package,"Centralized Mail Distribution Center
+Last name, first name, ID number
+3521 Woods Way
+State Farm, VA 23160"
+"Wisconsin (WI)
+DO NOT SEND","Last name, first name, ID number
+Facility
+PO Box 189
+Phoenix, MD 21131","Put on WI shelf after invoicing
+DO NOT SEND"

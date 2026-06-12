@@ -5,6 +5,7 @@ import { apiBooks } from './apiBooks-sidecar'
 import { apiReports } from './apiReports-sidecar'
 import { apiBackupDatabase } from './apiBackupDatabase-sidecar'
 import { apiGiphy } from './apiGiphy-sidecar'
+import { apiStateRestrictions } from './apiStateRestrictions-sidecar'
 
 export function registerAll() {
   apiRegister('/account/login', apiAccount.login)
@@ -15,6 +16,13 @@ export function registerAll() {
   apiRegister('/people/set', apiPeople.set)
   apiRegister('/people/rebuildSearchIndex', apiPeople.rebuildSearchIndex)
   apiRegister('/giphy/random', apiGiphy.random)
+  apiRegister('/stateRestrictions/search', apiStateRestrictions.search)
+  apiRegister('/stateRestrictions/set', apiStateRestrictions.set)
+  apiRegister('/stateRestrictions/add', apiStateRestrictions.add)
+  apiRegister(
+    '/stateRestrictions/setupAndSeed',
+    apiStateRestrictions.setupAndSeed,
+  )
 
   apiReports.installAll()
   apiBooks.installAll()

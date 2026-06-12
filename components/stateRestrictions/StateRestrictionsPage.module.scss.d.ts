@@ -1,0 +1,11 @@
+export declare const actions: string
+export declare const checkboxLabel: string
+export declare const deleted: string
+export declare const facilityName: string
+export declare const footerWarning: string
+export declare const icon: string
+export declare const search: string
+export declare const stateInputs: string
+export declare const stateRow: string
+export declare const table: string
+export declare const toolbar: string

@@ -5,6 +5,7 @@ import { sosUser } from '../account/sosUser-sidecar'
 import { sosB2P } from '../people/sosB2P-sidecar'
 import { Button } from '../../common/components/button/Button'
 import { ClientOnlyLoggedIn } from '../account/ClientOnlyLoggedIn'
+import { sosStateRestrictions } from '../stateRestrictions/sosStateRestrictions-sidecar'
 
 export const AdminPage = () => {
   return (
@@ -18,6 +19,7 @@ export const AdminPage = () => {
 
 const AdminPageContent = () => {
   let state = sosB2P.useSubscribe()
+  let stateRestrictionsState = sosStateRestrictions.useSubscribe()
 
   useEffect(() => {
     sosB2P.fetchPeopleCount()
@@ -56,6 +58,32 @@ const AdminPageContent = () => {
       {state.requestPeopleCount.isSuccess && (
         <div>People Count: {state.requestPeopleCount.response.count}</div>
       )}
+
+      <div>
+        <Button onClick={() => sosStateRestrictions.setupAndSeed()}>
+          Setup/seed state restrictions
+        </Button>
+        {stateRestrictionsState.requestSetupSeed.isFetching && (
+          <span> Setting up...</span>
+        )}
+        {stateRestrictionsState.requestSetupSeed.error && (
+          <span>
+            {' '}
+            Setup failed:{' '}
+            {stateRestrictionsState.requestSetupSeed.error.message ||
+              stateRestrictionsState.requestSetupSeed.error}
+          </span>
+        )}
+        {stateRestrictionsState.requestSetupSeed.isSuccess && (
+          <span>
+            {' '}
+            {stateRestrictionsState.requestSetupSeed.response.message ||
+              `Seeded ${
+                stateRestrictionsState.requestSetupSeed.response.insertedStates
+              } states`}
+          </span>
+        )}
+      </div>
 
       {state.requestPeopleCount.isSuccess &&
         buckets.map((bucket) => (

@@ -79,6 +79,11 @@ const AuthLinks = () => {
         <InternalLink href='/people/search'>People Search</InternalLink>
       </div>
       <div className={css.link}>
+        <InternalLink href='/state-restrictions'>
+          State Restrictions
+        </InternalLink>
+      </div>
+      <div className={css.link}>
         <InternalLink href='/admin'>Admin (Database Backup)</InternalLink>
       </div>
       <div className={css.link}>
