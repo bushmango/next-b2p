@@ -155,6 +155,16 @@ export const PeopleSearch = () => {
               </tr>
             ))}
           </tbody>
+          {state.peopleSearchHasMoreThanLimit && (
+            <tfoot>
+              <tr>
+                <td colSpan={headers.length + 4}>
+                  Showing the first {state.peopleSearchDisplayLimit} matches.
+                  Refine your search to see more specific results.
+                </td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       )}
       <div>

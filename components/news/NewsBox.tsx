@@ -7,6 +7,13 @@ export const NewsBox = () => {
     <Card title='News / Changelog'>
       {/* <div>Build: {buildDateTime}</div> */}
       <div>
+        Version 8 -- Summer 2026 updates
+        <ul>
+          <li>6/12/2026 - Maintenance Update</li>
+          <li>Update people search columns</li>
+        </ul>
+      </div>
+      <div>
         Version 7 -- 2024 updates
         <ul>
           <li>3/19/2024 - Maintenance Update</li>

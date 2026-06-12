@@ -8,6 +8,7 @@ import { DateTime } from 'luxon'
 import { searchIndex } from './lib/searchIndex-sidecar'
 
 const table = 'b2p_people_v5'
+const maxSearchDisplayLimit = 50
 
 export async function count(req: NextApiRequest, res: NextApiResponse) {
   return postJson(req, res, async (req, user) => {
@@ -32,7 +33,8 @@ export async function search(req: NextApiRequest, res: NextApiResponse) {
     let limit = apiArguments.getArgumentInteger(req, 'limit')
 
     search = search.toLowerCase()
-    limit = limit || 25
+    limit = limit || maxSearchDisplayLimit
+    limit = Math.max(1, Math.min(limit, maxSearchDisplayLimit))
     let organization = user?.organization
 
     let searchParts = ('' + search).split(' ', 25)
@@ -43,7 +45,7 @@ export async function search(req: NextApiRequest, res: NextApiResponse) {
       .select()
       .where({ organization })
       .orderBy('id')
-      .limit(limit)
+      .limit(limit + 1)
     if (!showDeleted) {
       query.where('deleted', false)
     }
@@ -52,10 +54,13 @@ export async function search(req: NextApiRequest, res: NextApiResponse) {
     })
 
     let results = await query
+    let records = l.take(results, limit)
     return {
-      num: results.length,
+      num: records.length,
+      displayLimit: limit,
+      hasMoreThanLimit: results.length > limit,
       search: search,
-      records: l.map(results, (c) => c),
+      records: l.map(records, (c) => c),
     }
   })
 }

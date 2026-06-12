@@ -34,6 +34,8 @@ export interface IStateB2P {
   selectedPersonId: string
   requestPeopleSearch: IApiRequestState<any>
   peopleSearchData: any
+  peopleSearchHasMoreThanLimit: boolean
+  peopleSearchDisplayLimit: number
   requestPeopleCount: IApiRequestState<any>
   requestPerson: IApiRequestState<any>
   requestSetPerson: IApiRequestState<any>
@@ -52,6 +54,8 @@ const getSos = sos.createLazySos2<IStateB2P>('sosB2P', 1, () => ({
   selectedPersonId: { default: '' },
   requestPeopleSearch: { default: {} },
   peopleSearchData: { default: null },
+  peopleSearchHasMoreThanLimit: { default: false },
+  peopleSearchDisplayLimit: { default: 50 },
   requestPeopleCount: { default: {} },
   requestPerson: { default: {} },
   requestSetPerson: { default: {} },
@@ -89,6 +93,7 @@ export async function fetchPeopleSearch() {
     {
       search: state.searchText,
       showDeleted: state.searchShowDeleted,
+      limit: 50,
     },
     (r) => {
       getSos().change((ds) => {
@@ -110,6 +115,8 @@ export async function fetchPeopleSearch() {
     console.log('got result', data)
     getSos().change((ds) => {
       ds.peopleSearchData = data
+      ds.peopleSearchHasMoreThanLimit = !!result.response.hasMoreThanLimit
+      ds.peopleSearchDisplayLimit = result.response.displayLimit || 50
     })
   }
 
