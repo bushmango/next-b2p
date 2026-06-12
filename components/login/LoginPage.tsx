@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '../../common/components/button/Button'
-import { Giphy } from '../../common/components/giphy/Giphy'
+import { B2PGiphy } from '../../common/components/giphy/B2PGiphy'
 import { Input } from '../../common/components/input/Input'
 import { IStateUser } from '../account/sosUser'
 import { sosUser } from '../account/sosUser-sidecar'
@@ -66,7 +66,7 @@ export const Login = (props: { state: IStateUser }) => {
       }}
     >
       <Card>
-        <Giphy tag='love,thank you,lgbt,lgbtq,gay pride,trans pride,bisexual pride,books,library,rainbow' />
+        <B2PGiphy />
       </Card>
 
       <Card title='Login'>

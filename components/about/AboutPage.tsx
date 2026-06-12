@@ -1,6 +1,9 @@
 import React from 'react'
 import { Layout } from '../layout/Layout'
 import { getUrl } from '../../lib/urls'
+import { Card } from '../../common/components/card/Card'
+import { B2PGiphy } from '../../common/components/giphy/B2PGiphy'
+import { ClientOnly } from '../ClientOnly'
 
 export const LGBTBooksToPrisonersLogo = () => {
   return (
@@ -36,6 +39,11 @@ export const AboutPage = () => {
         <div>
           <LGBTBooksToPrisonersLogo />
         </div>
+        <ClientOnly>
+          <Card>
+            <B2PGiphy />
+          </Card>
+        </ClientOnly>
       </div>
     </Layout>
   )

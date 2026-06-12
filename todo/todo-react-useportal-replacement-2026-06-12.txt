@@ -1,0 +1,64 @@
+React-useportal replacement plan
+Date: 2026-06-12
+
+Context
+- This follows item 1 from todo-nextjs-possible-migration-steps.txt.
+- react-useportal is installed at 1.0.14 and has stale React 16/17 peer dependency expectations.
+- The app now runs React 19 and Next.js 16, so keeping this dependency adds avoidable install and runtime risk.
+- Current source usage is limited to components/people/print/PrintPerson.tsx.
+
+Goal
+- Remove react-useportal and replace it with a small local ReactDOM.createPortal-based helper.
+- Preserve the current print behavior: PrintPerson renders printable package/address content outside the normal edit panel layout so print styles can target it cleanly.
+- Keep the change scoped to the print flow.
+
+Recommended implementation
+1. Add a local ClientPortal component.
+   - Place it near existing shared components, for example components/ClientPortal.tsx or common/components/portal/ClientPortal.tsx.
+   - Use ReactDOM.createPortal from react-dom.
+   - Create a DOM node only on the client inside useEffect.
+   - Append the node to document.body.
+   - Remove the node on unmount.
+   - Return null during SSR and before mount.
+   - Accept children and an optional className/id if needed later.
+
+2. Update PrintPerson.
+   - Remove import usePortal from react-useportal.
+   - Import the new ClientPortal component.
+   - Replace:
+     const { Portal } = usePortal()
+     <Portal>...</Portal>
+     with:
+     <ClientPortal>...</ClientPortal>
+   - Keep the existing printable wrapper:
+     <div className={cssPrint.printable}>...</div>
+
+3. Remove the dependency.
+   - Run:
+     yarn remove react-useportal
+   - Confirm package.json and yarn.lock no longer contain react-useportal.
+
+4. Verify behavior.
+   - Run yarn type-check.
+   - Run yarn lint.
+   - Run yarn build.
+   - Start the app and manually verify the person edit page still renders when a person is selected.
+   - Open the browser print preview for a person with a package sent today and confirm the printable address/packing slip still appears as before.
+
+5. Watch for edge cases.
+   - SSR/hydration: the portal helper must render null until mounted so it does not touch document/window on the server.
+   - Cleanup: the helper must remove its created element when PrintPerson unmounts.
+   - Print CSS: do not move or rename cssPrint.printable unless the print stylesheet is updated at the same time.
+   - Empty state: PrintPerson should still return null when state.editPerson is missing.
+
+Acceptance criteria
+- No imports from react-useportal remain.
+- react-useportal is removed from package.json and yarn.lock.
+- PrintPerson renders through the local portal helper.
+- yarn type-check passes.
+- yarn lint has no new errors.
+- yarn build passes.
+- Manual print preview confirms the packing slip and address label remain printable.
+
+Suggested follow-up
+- If more portal use cases appear later, promote ClientPortal into a shared component with optional target, id, and cleanup behavior. For this migration, keep it minimal.

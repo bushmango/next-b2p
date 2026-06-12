@@ -10,7 +10,7 @@ from Stevie:
 - fix gliphy
 
 - possibly add more filtering
-- show # of results in search and show more than 25 -- paging?
+XX - show # of results in search and show more than 25 -- paging?
 
 - do we want a record of institutions instead of repeating for each person?
 pros: one space, backed up, integrated
@@ -37,8 +37,8 @@ from Debbie:
 in the packages panel "packages sent to this person
 
 
-E - Bigger "Notes" box so it's easier to read
-E - Save history of screening dates (currently - deletes everything if you hit the button twice in a row, easy to do by accident)
+XX E - Bigger "Notes" box so it's easier to read
+XX E - Save history of screening dates (currently - deletes everything if you hit the button twice in a row, easy to do by accident)
 [make screened dates an array? is this the screen letter box?
 also only clear the current day, not the whole history?]
 XX E - Different color icons for screening and packages in the search display?
