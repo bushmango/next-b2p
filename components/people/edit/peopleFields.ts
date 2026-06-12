@@ -3,11 +3,12 @@ export interface IField {
   field: string
   width?: number
   readonly?: boolean
+  multiline?: boolean
 }
 export let fields: IField[] = [
   { label: 'Mailing Name', field: 'FullName', width: 250 },
   { label: 'Preferred Name', field: 'Aka', width: 250 },
-  { label: 'Notes', field: 'Notes' },
+  { label: 'Notes', field: 'Notes', multiline: true },
   { label: 'ID #', field: 'Id' },
   { label: 'Institution', field: 'Institution', width: 250 },
   { label: 'Address', field: 'Address', width: 250 },

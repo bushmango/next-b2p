@@ -241,24 +241,40 @@ export function updateEditNewBook(changes: Partial<INewBook>) {
   })
 }
 
+function normalizeScreenDate(date: string): string {
+  const parsedDate = DateTime.fromISO(date)
+  if (!parsedDate.isValid) {
+    return date
+  }
+
+  return parsedDate.toISODate() || date
+}
+
 export function isScreenedToday(json: any): boolean {
-  let today = DateTime.local()
-  const isToday = (c: string) => today.hasSame(DateTime.fromISO(c), 'day')
-  return l.some(json.Screens, isToday)
+  const todayIso = DateTime.local().toISODate()
+  return l.some(
+    json.Screens || [],
+    (screenDate: string) => normalizeScreenDate(screenDate) === todayIso,
+  )
 }
 export function toggleScreenedToday() {
-  let today = DateTime.local()
-  const isToday = (c: string) => today.hasSame(DateTime.fromISO(c), 'day')
+  const todayIso = DateTime.local().toISODate()
   getSos().change((ds) => {
-    if (!ds.editPerson.json.Screens) {
-      ds.editPerson.json.Screens = []
-    }
-    let a = l.some(ds.editPerson.json.Screens, isToday)
-    console.log('screens?', a, ds.editPerson.json.Screens)
-    if (!a) {
-      ds.editPerson.json.Screens.push(DateTime.local().toISODate())
+    const screens = Array.isArray(ds.editPerson.json.Screens)
+      ? ds.editPerson.json.Screens
+      : []
+    const hasToday = l.some(
+      screens,
+      (screenDate: string) => normalizeScreenDate(screenDate) === todayIso,
+    )
+
+    if (!hasToday) {
+      ds.editPerson.json.Screens = [...screens, todayIso]
     } else {
-      l.remove(ds.editPerson.json.Screens, (c: string) => isToday)
+      ds.editPerson.json.Screens = l.filter(
+        screens,
+        (screenDate: string) => normalizeScreenDate(screenDate) !== todayIso,
+      )
     }
   })
   sendUpdateEditPersonThrottled()
@@ -353,7 +369,7 @@ export const calcNumUnreturnedPackages = (json: any) => {
   let totalUnreturnedPackagesThisYear = 0
   let totalScreensThisYear = 0
 
-  l.forEach(json.Screens, (c) => {
+  l.forEach(json.Screens || [], (c) => {
     if (DateTime.local().hasSame(DateTime.fromISO(c), 'year')) {
       totalScreensThisYear++
     }

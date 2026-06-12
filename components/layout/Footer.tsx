@@ -6,7 +6,7 @@ import { Spacer } from '../spacer/Spacer'
 export const Footer = () => {
   return (
     <div className={css.footer}>
-      <div>&copy; 2015-2020 Stevie Bushman and LGBT Books to Prisoners</div>
+      <div>&copy; 2015-2026 Stevie Bushman and LGBT Books to Prisoners</div>
       <Spacer />
       <div>
         For support / comments / inquiries contact : Stevie Bushman &ndash;

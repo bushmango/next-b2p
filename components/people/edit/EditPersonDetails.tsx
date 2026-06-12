@@ -15,15 +15,20 @@ export const EditPersonDetails = (props: { state: IStateB2P }) => {
       <table>
         <tbody>
           {l.map(fields, (c) => {
+            const headerClassName = c.multiline
+              ? `${css.header} ${css.headerTop}`
+              : css.header
+
             return (
               <tr key={c.field}>
-                <th className={css.header}>{c.label || c.field}</th>
+                <th className={headerClassName}>{c.label || c.field}</th>
                 <td style={{ minWidth: '300px' }}>
                   {c.readonly ? (
                     <div>{state.editPerson.json[c.field]}</div>
                   ) : (
                     <Input
                       value={state.editPerson.json[c.field] || ''}
+                      multiline={c.multiline}
                       onChange={(newVal) => {
                         sosB2P.updateEditPerson({ [c.field]: newVal })
                       }}

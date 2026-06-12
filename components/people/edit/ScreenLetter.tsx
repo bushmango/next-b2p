@@ -9,6 +9,11 @@ import { sosB2P } from '../sosB2P-sidecar'
 
 export const ScreenLetter = (props: { json: any }) => {
   let { json } = props
+  const screenDates = l.orderBy(
+    json.Screens || [],
+    (c) => DateTime.fromISO(c).toMillis(),
+    'desc',
+  )
 
   let { totalUnreturnedPackagesThisYear, totalScreensThisYear } =
     sosB2P.calcNumUnreturnedPackages(json)
@@ -45,12 +50,17 @@ export const ScreenLetter = (props: { json: any }) => {
       </div>
       <Spacer />
       <div>
-        Screened on:{' '}
-        {l.join(
-          l.map(json.Screens, (c) =>
-            DateTime.fromISO(c).toLocaleString(DateTime.DATE_FULL),
-          ),
-          ', ',
+        <div>Screened on:</div>
+        {screenDates.length ? (
+          <ul>
+            {l.map(screenDates, (c) => (
+              <li key={c}>
+                {DateTime.fromISO(c).toLocaleString(DateTime.DATE_FULL)}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>None yet</div>
         )}
       </div>
     </Card>

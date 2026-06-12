@@ -41,18 +41,18 @@ E - Bigger "Notes" box so it's easier to read
 E - Save history of screening dates (currently - deletes everything if you hit the button twice in a row, easy to do by accident)
 [make screened dates an array? is this the screen letter box?
 also only clear the current day, not the whole history?]
-E - Different color icons for screening and packages in the search display?
-[also align them consistently]
-E- Ability to show more than the top N search results
+XX E - Different color icons for screening and packages in the search display?
+XX [also align them consistently]
+XX E- Ability to show more than the top N search results
 E - Something for saving notes about rejections/returns (maybe another text field associated with each
  package that doesn't get printed on the invoice? or ability to save a list of Notes instead of just 
  having one text field that gets overwritten?).
-M - For end-of-year packages: December letters are often screened and filled in January and need to be 
+DELAY M - For end-of-year packages: December letters are often screened and filled in January and need to be 
 manually back-dated so that the package count isn't off. Maybe a button that resets a screening/package 
 date to "12/31/<prev_year>"? 
-M - Option to add our address to the invoice next to Room's (not sure if we want this to be default at this time)
+WAIT M - Option to add our address to the invoice next to Room's (not sure if we want this to be default at this time)
 [toggle between them? just replace with B2P location? wait for response from Debbie and Katherine]
-M - Field(s) for paper mailing address
+WAIT M - Field(s) for paper mailing address
 
 Bigger dreams:
 ? - Something else to assist with remembering which facilities have separate addresses for paper mail 
