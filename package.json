@@ -42,7 +42,6 @@
     "ramda-adjunct": "2.35.0",
     "react": "19",
     "react-dom": "19",
-    "react-useportal": "1.0.14",
     "rimraf": "^3.0.2",
     "sass": "^1.72.0",
     "uuid": "8.3.2"

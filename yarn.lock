@@ -5001,13 +5001,6 @@ react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-useportal@1.0.14:
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/react-useportal/-/react-useportal-1.0.14.tgz#7bb1376c1b60b04f45020205eb440d7fbbbac097"
-  integrity sha512-NKLJsY+hgy/jFJlsIBJGK/8wBdTWstEaQNy300wRp7J5DFtNlRRbOpn+R3Z4j9mtQMTyG1ENc3tz09/9JxjQNQ==
-  dependencies:
-    use-ssr "^1.0.22"
-
 react@19:
   version "19.2.7"
   resolved "https://registry.yarnpkg.com/react/-/react-19.2.7.tgz#1f47a1bfc06f8ec885752c6f4af14369a9f8260b"
@@ -6230,11 +6223,6 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
-
-use-ssr@^1.0.22:
-  version "1.0.24"
-  resolved "https://registry.yarnpkg.com/use-ssr/-/use-ssr-1.0.24.tgz#213a3df58f5ab9268e6fe1a57ad0a9de91e514d1"
-  integrity sha512-0MFps7ezL57/3o0yl4CvrHLlp9z20n1rQZV/lSRz7if+TUoM6POU1XdOvEjIgjgKeIhTEye1U0khrIYWCTWw4g==
 
 use@^3.1.0:
   version "3.1.1"

@@ -2,14 +2,13 @@ import cssPrint from './Print.module.scss'
 import l from 'lodash'
 import { DateTime } from 'luxon'
 import React, { useEffect } from 'react'
-import usePortal from 'react-useportal'
+import { ClientPortal } from '../../../common/components/portal/ClientPortal'
 import { urls } from '../../../lib/urls-sidecar'
 import { isB2PDateToday } from '../sosB2P'
 import { sosB2P } from '../sosB2P-sidecar'
 const autoPrint = false
 export const PrintPerson = () => {
   let state = sosB2P.useSubscribe()
-  const { Portal } = usePortal()
 
   let packageToday: any = null
 
@@ -41,14 +40,14 @@ export const PrintPerson = () => {
         Close
       </Button> */}
       {/* <ToBePrinted packageToday={packageToday} json={state.editPerson.json} /> */}
-      <Portal>
+      <ClientPortal>
         <div className={cssPrint.printable}>
           <ToBePrinted
             packageToday={packageToday}
             json={state.editPerson.json}
           />
         </div>
-      </Portal>
+      </ClientPortal>
     </div>
   )
 }
