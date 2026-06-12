@@ -13,8 +13,9 @@ export const HomePage = () => {
     <Layout title='Home'>
       <div className={css.home}>
         <h2 className={css.homeHeader}>
-          Welcome to the LGBT Books to Prisoners Database
+          Welcome to the LGBT Books to Prisoners Database{' '}
         </h2>
+        <div>{process.env.NEXT_PUBLIC_MOTD || '[MOTD placeholder]'}</div>
 
         <Login state={state} />
         <Logout state={state} />
