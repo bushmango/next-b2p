@@ -12,9 +12,6 @@ export const Layout = (props: {
   children: React.ReactNode
   title?: string
 }) => {
-  const state = sosUser.useSubscribe()
-  let isLoggedIn = !!state.token
-
   return (
     <React.Fragment>
       {props.title && (
@@ -41,45 +38,51 @@ export const Layout = (props: {
             <div className={css.link}>
               <InternalLink href='/news'>News</InternalLink>
             </div>
-            {isLoggedIn && (
-              <React.Fragment>
-                <div className={css.link}>
-                  <InternalLink href='/people/search'>
-                    People Search
-                  </InternalLink>
-                </div>
-                <div className={css.link}>
-                  <InternalLink href='/admin'>
-                    Admin (Database Backup)
-                  </InternalLink>
-                </div>
-                {/* <div className={classes.link}>
+            <ClientOnly>
+              <AuthLinks />
+            </ClientOnly>
+            {/* <div className={classes.link}>
               <RazLink to='/books/search'>Book Search</RazLink>
             </div> */}
-                {/* <div className={classes.link}>
+            {/* <div className={classes.link}>
               <RazLink to='/api-test'>Api Test</RazLink>
             </div> */}
-                {/* <div className={css.link}>
+            {/* <div className={css.link}>
                   <InternalLink href='/admin'>Admin</InternalLink>
                 </div> */}
-                <div className={css.link}>
-                  <InternalLink href='/login'>Logout</InternalLink>
-                </div>
-              </React.Fragment>
-            )}
-            {!isLoggedIn && (
-              <React.Fragment>
-                <div className={css.link}>
-                  <InternalLink href='/login'>Login</InternalLink>
-                </div>
-              </React.Fragment>
-            )}
           </div>
         </div>
         <div className={css.body}>{props.children}</div>
         <div>
           <Footer />
         </div>
+      </div>
+    </React.Fragment>
+  )
+}
+
+const AuthLinks = () => {
+  const state = sosUser.useSubscribe()
+  const isLoggedIn = !!state.token
+
+  if (!isLoggedIn) {
+    return (
+      <div className={css.link}>
+        <InternalLink href='/login'>Login</InternalLink>
+      </div>
+    )
+  }
+
+  return (
+    <React.Fragment>
+      <div className={css.link}>
+        <InternalLink href='/people/search'>People Search</InternalLink>
+      </div>
+      <div className={css.link}>
+        <InternalLink href='/admin'>Admin (Database Backup)</InternalLink>
+      </div>
+      <div className={css.link}>
+        <InternalLink href='/login'>Logout</InternalLink>
       </div>
     </React.Fragment>
   )

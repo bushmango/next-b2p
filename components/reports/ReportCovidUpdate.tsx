@@ -1,20 +1,24 @@
 import React from 'react'
-import { sosUser } from '../account/sosUser-sidecar'
 import { ApiTest } from '../admin/ApiTest'
 import { sosAdmin } from '../admin/sosAdmin-sidecar'
 import { Layout } from '../layout/Layout'
-import { sosB2P } from '../people/sosB2P-sidecar'
+import { ClientOnlyLoggedIn } from '../account/ClientOnlyLoggedIn'
 
 export const ReportCovidUpdate = () => {
-  if (!sosUser.ensureAdmin()) {
-    return null
-  }
+  return (
+    <Layout title='Report Covid Update'>
+      <ClientOnlyLoggedIn>
+        <ReportCovidUpdateContent />
+      </ClientOnlyLoggedIn>
+    </Layout>
+  )
+}
 
-  let state = sosB2P.useSubscribe()
+const ReportCovidUpdateContent = () => {
   let stateAdmin = sosAdmin.useSubscribe()
 
   return (
-    <Layout title='Report Covid Update'>
+    <React.Fragment>
       <h1>Report</h1>
       <div>
         LGBT Books to Prisoners is looking to do a mass mailing to people who
@@ -41,6 +45,6 @@ export const ReportCovidUpdate = () => {
         label='Run Covid Update Report'
         request={stateAdmin.requestReport}
       />
-    </Layout>
+    </React.Fragment>
   )
 }

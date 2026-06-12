@@ -1,20 +1,23 @@
 import React, { useEffect } from 'react'
 
 import { Layout } from '../layout/Layout'
-import { ApiTest } from './ApiTest'
-import { sosAdmin } from './sosAdmin-sidecar'
 import { sosUser } from '../account/sosUser-sidecar'
 import { sosB2P } from '../people/sosB2P-sidecar'
 import { Button } from '../../common/components/button/Button'
-import { group } from 'console'
+import { ClientOnlyLoggedIn } from '../account/ClientOnlyLoggedIn'
 
 export const AdminPage = () => {
-  if (!sosUser.ensureAdmin()) {
-    return null
-  }
+  return (
+    <Layout title='Admin'>
+      <ClientOnlyLoggedIn>
+        <AdminPageContent />
+      </ClientOnlyLoggedIn>
+    </Layout>
+  )
+}
 
+const AdminPageContent = () => {
   let state = sosB2P.useSubscribe()
-  let stateAdmin = sosAdmin.useSubscribe()
 
   useEffect(() => {
     sosB2P.fetchPeopleCount()
@@ -37,7 +40,7 @@ export const AdminPage = () => {
   }
 
   return (
-    <Layout title='Admin'>
+    <React.Fragment>
       <h1>Admin</h1>
 
       {/* <ApiTest
@@ -56,7 +59,7 @@ export const AdminPage = () => {
 
       {state.requestPeopleCount.isSuccess &&
         buckets.map((bucket) => (
-          <div>
+          <div key={bucket.group}>
             <Button
               onClick={() => {
                 // var file_path = 'host/path/file.ext'
@@ -116,6 +119,6 @@ export const AdminPage = () => {
         label='Grant to Bushmango'
         request={stateAdmin.requestGrantDatabase}
       /> */}
-    </Layout>
+    </React.Fragment>
   )
 }

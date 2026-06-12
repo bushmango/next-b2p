@@ -1,0 +1,61 @@
+Next.js 16 follow-up migration steps
+Date: 2026-06-12
+
+Current upgrade state
+- Upgraded directly from Next.js 12 to Next.js 16 on the current beta branch.
+- Kept the existing Pages Router structure.
+- Added ESLint 9 flat config and scripts.
+- Removed @zeit/next-sass.
+- Removed package-lock.json so yarn.lock is the single package lock.
+
+Recommended next steps
+1. Replace react-useportal
+   - Current install warns that react-useportal expects React 16/17 peer dependencies.
+   - PrintPerson is the only current usage.
+   - Replace with ReactDOM.createPortal or a maintained portal helper.
+
+2. Decide whether to keep Pages Router or migrate to App Router
+   - Keep Pages Router until the framework upgrade has been deployed and observed.
+   - If migration is useful later, move one route at a time into app/.
+   - Do not combine App Router migration with auth or database rewrites.
+
+3. Tighten ESLint after the app settles
+   - Current lint passes with warnings to avoid making the framework upgrade a broad style rewrite.
+   - Cleanup candidates:
+     - unused eslint-disable comments in sidecar files
+     - no-var warnings
+     - unused variables
+     - missing img alt text
+     - React hook dependency warnings
+     - set-state-in-effect warnings
+
+4. Replace legacy local auth
+   - Move away from static token in localStorage.
+   - Use server-side sessions with Secure, HttpOnly, SameSite cookies.
+   - Add server-side role checks before admin/export operations.
+
+5. Rework backup/export flow
+   - Keep operational pg_dump backups separate from the in-app JSON backup endpoint.
+   - Remove token-in-query backup URLs.
+   - Add bounded export ranges and audit logging if in-app export remains.
+
+6. Add app-level security headers
+   - Add next.config.js headers or configure them at the deployment edge.
+   - Include Content-Security-Policy, frame-ancestors, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and HSTS at the TLS edge.
+
+7. Modernize data access after the framework upgrade
+   - Upgrade knex/pg separately.
+   - Add explicit DB SSL configuration for production.
+   - Add schema validation for API bodies and clamp limits.
+
+8. Check deployment Node version
+   - Confirm beta/prod runtime Node supports Next 16.
+   - Document the required Node and yarn versions in README.
+
+9. Revisit image optimization
+   - Current lint warns about raw img tags.
+   - Decide whether Next Image is useful for local/public assets and external book-cover URLs.
+
+10. Add smoke tests
+   - Add a minimal route/API smoke suite after the upgraded app is manually verified.
+   - Cover /, /about, /login, /people/search, /admin, /reports/covid-update, and /api/api.

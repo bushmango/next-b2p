@@ -5,6 +5,7 @@ import css from './Home.module.scss'
 import { Login, Logout } from '../login/LoginPage'
 import { NewsBox } from '../news/NewsBox'
 import { sosUser } from '../account/sosUser-sidecar'
+import { ClientOnly } from '../ClientOnly'
 
 export const HomePage = () => {
   let state = sosUser.useSubscribe()
@@ -17,8 +18,10 @@ export const HomePage = () => {
         </h2>
         <div>{process.env.NEXT_PUBLIC_MOTD || '[MOTD placeholder]'}</div>
 
-        <Login state={state} />
-        <Logout state={state} />
+        <ClientOnly>
+          <Login state={state} />
+          <Logout state={state} />
+        </ClientOnly>
         <NewsBox />
 
         <InternalLink href='/login'>Login</InternalLink>

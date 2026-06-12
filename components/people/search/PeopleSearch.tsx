@@ -9,7 +9,10 @@ import { l } from '../../../common/lib/lodash'
 import { route } from '../../../common/lib/route-sidecar'
 import { Spacer } from '../../spacer/Spacer'
 import cssTable from '../edit/EditPersonDetails.module.scss'
-import { NumPackagesThisYear } from '../NumPackagesThisYear'
+import {
+  NumLettersScreenedThisYear,
+  NumPackagesSentThisYear,
+} from '../NumPackagesThisYear'
 import css from '../People.module.scss'
 import { sosB2P } from '../sosB2P-sidecar'
 
@@ -99,7 +102,13 @@ export const PeopleSearch = () => {
                 className={cssTable.headerVertical}
                 title='Packages sent this year'
               >
-                Packages*
+                <Icon icon={solidIcons.faBook} />
+              </th>
+              <th
+                className={cssTable.headerVertical}
+                title='Letters screened this year'
+              >
+                <Icon icon={solidIcons.faEnvelopeOpenText} />
               </th>
               {l.map(headers, (h, hIdx) => (
                 <th className={cssTable.headerVertical} key={'h-' + hIdx}>
@@ -135,7 +144,10 @@ export const PeopleSearch = () => {
                 </td>
                 {/* <td>{cIdx + 1}</td> */}
                 <td>
-                  <NumPackagesThisYear json={c} />
+                  <NumPackagesSentThisYear json={c} />
+                </td>
+                <td>
+                  <NumLettersScreenedThisYear json={c} />
                 </td>
                 {l.map(headers, (h, hIdx) => (
                   <td key={'c-' + hIdx}>{c[h.field]}</td>

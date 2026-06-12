@@ -11,20 +11,20 @@ export interface IApiRequestState<T> {
   params?: string
 }
 
-export const createDefault = <T extends any>(): IApiRequestState<T> => {
+export const createDefault = <T>(): IApiRequestState<T> => {
   return {
     isFetching: false,
     requestId: 0,
   }
 }
-export const createRequesting = <T extends any>(): IApiRequestState<T> => {
+export const createRequesting = <T>(): IApiRequestState<T> => {
   return {
     isFetching: true,
     requestId: currentRequestId++,
     startTime: new Date().toISOString(),
   }
 }
-export const createSuccess = <T extends any>(
+export const createSuccess = <T>(
   request: IApiRequestState<T>,
   response: T,
 ): IApiRequestState<T> => {
@@ -37,7 +37,7 @@ export const createSuccess = <T extends any>(
     isSuccess: response && (response as any).isSuccess,
   }
 }
-export const createError = <T extends any>(
+export const createError = <T>(
   request: IApiRequestState<T>,
   error: any,
 ): IApiRequestState<T> => {

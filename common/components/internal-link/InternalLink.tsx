@@ -19,18 +19,17 @@ export const InternalLink = (props: {
   }
 
   return (
-    <Link href={props.href}>
-      <a
-        className={className}
-        onMouseEnter={() => {
-          setHover(true)
-        }}
-        onMouseLeave={() => {
-          setHover(false)
-        }}
-      >
-        {props.children || props.href}
-      </a>
+    <Link
+      href={props.href}
+      className={className}
+      onMouseEnter={() => {
+        setHover(true)
+      }}
+      onMouseLeave={() => {
+        setHover(false)
+      }}
+    >
+      {props.children || props.href}
     </Link>
   )
 }

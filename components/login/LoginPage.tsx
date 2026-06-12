@@ -11,14 +11,17 @@ import { props } from 'ramda'
 import { Stacked } from '../../common/components/stacked/Stacked'
 import { Spacer } from '../spacer/Spacer'
 import { AlignRight } from '../../common/components/align/AlignRight'
+import { ClientOnly } from '../ClientOnly'
 
 export const LoginPage = () => {
   let state = sosUser.useSubscribe()
 
   return (
     <Layout title='Login'>
-      <Login state={state} />
-      <Logout state={state} />
+      <ClientOnly>
+        <Login state={state} />
+        <Logout state={state} />
+      </ClientOnly>
       <NewsBox />
     </Layout>
   )
