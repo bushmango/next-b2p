@@ -21,16 +21,37 @@ export type MonthlyMailVolumeReport = {
   }
 }
 
+export type FutureMailActivityRow = {
+  type: string
+  date: string
+  isoDate: string
+  personName: string
+  location: string
+  guid: string
+  details: string
+  status: string
+}
+
+export type FutureMailActivityReport = {
+  today: string
+  count: number
+  rows: FutureMailActivityRow[]
+}
+
 export interface IStateReports {
   monthlyMailVolumeYear: number
   requestMonthlyMailVolume: IApiRequestState<MonthlyMailVolumeReport>
   monthlyMailVolumeReport: MonthlyMailVolumeReport | null
+  requestFutureMailActivity: IApiRequestState<FutureMailActivityReport>
+  futureMailActivityReport: FutureMailActivityReport | null
 }
 
 const getSos = sos.createLazySos2<IStateReports>('sosReports', 1, () => ({
   monthlyMailVolumeYear: { default: DateTime.local().year },
   requestMonthlyMailVolume: { default: {} },
   monthlyMailVolumeReport: { default: null },
+  requestFutureMailActivity: { default: {} },
+  futureMailActivityReport: { default: null },
 }))
 
 export const useSubscribe = sos.createUseSubscribe(getSos)
@@ -57,6 +78,25 @@ export async function fetchMonthlyMailVolume() {
     let report = result.response
     getSos().change((ds) => {
       ds.monthlyMailVolumeReport = report
+    })
+  }
+}
+
+export async function fetchFutureMailActivity() {
+  let result = await apiRequest.post<FutureMailActivityReport>(
+    '/api/reports/future-mail-activity',
+    {},
+    (r) => {
+      getSos().change((ds) => {
+        ds.requestFutureMailActivity = r
+      })
+    },
+  )
+
+  if (result.isSuccess && result.response) {
+    let report = result.response
+    getSos().change((ds) => {
+      ds.futureMailActivityReport = report
     })
   }
 }

@@ -37,6 +37,16 @@ const ReportsPageContent = () => {
               selected year.
             </td>
           </tr>
+          <tr>
+            <td>
+              <InternalLink href='/reports/future-mail-activity'>
+                Future Mail Activity
+              </InternalLink>
+            </td>
+            <td>
+              Packages, books, and screened letters dated after today.
+            </td>
+          </tr>
           {b2pDebugDefs.featureFlag_allowCovidReport && (
             <tr>
               <td>

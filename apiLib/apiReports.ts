@@ -12,6 +12,39 @@ import { DateTime } from 'luxon'
 export function installAll() {
   apiRegister('/reports/covid-update', runReport_covidUpdate)
   apiRegister('/reports/monthly-mail-volume', runReport_monthlyMailVolume)
+  apiRegister('/reports/future-mail-activity', runReport_futureMailActivity)
+}
+
+function getPersonName(json: any): string {
+  return json.FullName || json.PreferredName || json.Name || ''
+}
+
+function getPersonLocation(json: any): string {
+  return l
+    .filter([json.Institution, json.City, json.State], (value) => !!value)
+    .join(', ')
+}
+
+function getPackageStatus(p: any): string {
+  let status: string[] = []
+  if (p.IsDeleted) {
+    status.push('Deleted')
+  }
+  if (p.IsReturned) {
+    status.push('Returned')
+  }
+  return status.join(', ')
+}
+
+function getBookStatus(item: any): string {
+  let status: string[] = []
+  if (item.IsDeleted) {
+    status.push('Deleted')
+  }
+  if (item.IsReturned) {
+    status.push('Returned')
+  }
+  return status.join(', ')
 }
 
 function createEmptyMonthlyMailVolume(year: number) {
@@ -87,6 +120,93 @@ export async function runReport_monthlyMailVolume(
     })
 
     return report
+  })
+}
+
+export async function runReport_futureMailActivity(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  return postJson(req, res, async (req, user) => {
+    let organization = user?.organization
+    let today = DateTime.local().startOf('day')
+
+    let results = await db
+      .from(table)
+      .select()
+      .where({ organization })
+      .where('deleted', false)
+      .orderBy('id')
+
+    let rows: any[] = []
+
+    l.forEach(results, (person) => {
+      let json = person.json || {}
+      let personName = getPersonName(json)
+      let location = getPersonLocation(json)
+
+      l.forEach(json.Packages || [], (p: any) => {
+        let packageDate = parseB2PDate(p.Date || '')
+        if (!packageDate || !packageDate.isValid || packageDate <= today) {
+          return
+        }
+
+        rows.push({
+          type: 'Package',
+          date: p.Date || '',
+          isoDate: packageDate.toISODate(),
+          personName,
+          location,
+          guid: person.guid,
+          details: `${(p.Items || []).length} book(s)`,
+          status: getPackageStatus(p),
+        })
+
+        l.forEach(p.Items || [], (item: any) => {
+          rows.push({
+            type: 'Book',
+            date: p.Date || '',
+            isoDate: packageDate.toISODate(),
+            personName,
+            location,
+            guid: person.guid,
+            details: l
+              .filter([item.Name || item.Title, item.Author], (value) => !!value)
+              .join(' - '),
+            status: getBookStatus(item),
+          })
+        })
+      })
+
+      l.forEach(json.Screens || [], (screenDate: string) => {
+        let parsedScreenDate = DateTime.fromISO(screenDate).startOf('day')
+        if (
+          !parsedScreenDate.isValid ||
+          parsedScreenDate <= today
+        ) {
+          return
+        }
+
+        rows.push({
+          type: 'Letter Screened',
+          date: screenDate,
+          isoDate: parsedScreenDate.toISODate(),
+          personName,
+          location,
+          guid: person.guid,
+          details: '',
+          status: '',
+        })
+      })
+    })
+
+    rows = l.sortBy(rows, ['isoDate', 'personName', 'type'])
+
+    return {
+      today: today.toISODate(),
+      count: rows.length,
+      rows,
+    }
   })
 }
 

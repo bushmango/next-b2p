@@ -1,0 +1,147 @@
+Luxon Date Migration Plan and Risk Report
+Date: 2026-06-18
+
+Goal
+Replace remaining app-level native Date usage with Luxon where it improves consistency, while avoiding changes that alter business-date semantics or introduce reporting bugs.
+
+Dry Run Findings
+
+Change to Luxon
+
+1. common/lib/request/apiRequestState.ts
+   - Current usage:
+     - new Date().toISOString() at request start/end tracking.
+   - Proposed change:
+     - Replace with DateTime.utc().toISO(), or use a small shared helper such as nowIsoUtc().
+   - Risk:
+     - Low. These are technical request lifecycle timestamps, not user-facing B2P business dates.
+
+2. scripts/pg-dump-backup.js
+   - Current usage:
+     - Native Date is used for backup dump filename timestamps.
+   - Proposed change:
+     - Optional replacement with Luxon:
+       const { DateTime } = require('luxon')
+       DateTime.utc().toISO().replace(/[:.]/g, '-')
+   - Risk:
+     - Low, but this is not urgent. The current native Date usage is isolated to a script filename.
+
+3. Existing DB timestamp writes
+   - Files:
+     - apiLib/apiPeople.ts
+     - apiLib/apiStateRestrictions.ts
+   - Current usage:
+     - DateTime.local().toISO()
+   - Proposed change:
+     - Do not change immediately. Consider a later, explicit decision on whether database timestamps should be local-offset ISO strings or UTC ISO strings.
+
+Do Not Replace With Luxon
+
+These files use timestamps for elapsed timing, not calendar or business dates:
+
+1. lib/useAnimationTimer.ts
+2. lib/useAnimationForever.ts
+3. common/lib/sos/sos.ts
+
+Recommendation:
+- Leave these as native Date.now(), or change to performance.now() if we want a timing-focused cleanup.
+- Do not replace these with Luxon.
+
+Refactor Candidates
+
+1. Extract B2P date helpers
+   - Source file:
+     - components/people/sosB2P.ts
+   - Helpers to extract:
+     - parseB2PDate
+     - B2PDateFormat
+     - formatToday
+     - normalizeScreenDate
+   - Suggested destination:
+     - common/lib/date/b2pDates.ts
+
+2. Avoid module-load current-year state
+   - Source file:
+     - components/people/sosB2P.ts
+   - Current concern:
+     - thisYear = DateTime.local() is computed at module load.
+   - Proposed change:
+     - Compute the current year inside calcNumUnreturnedPackages so it cannot go stale across a year boundary.
+
+3. Remove component-domain date dependency from reports
+   - Source file:
+     - apiLib/apiReports.ts
+   - Current concern:
+     - Reports import date parsing from components/people/sosB2P.ts.
+   - Proposed change:
+     - After extracting shared B2P date helpers, import from common/lib/date/b2pDates.ts instead.
+
+Risk Report
+
+Main Risk
+The primary risk is not Luxon. The primary risk is changing the meaning of stored timestamps, especially if we switch DateTime.local().toISO() to DateTime.utc().toISO().
+
+Example
+
+Local-offset ISO:
+2026-06-18T09:30:00.000-05:00
+
+UTC ISO:
+2026-06-18T14:30:00.000Z
+
+These can represent the same instant, but downstream code may not treat them the same.
+
+Risks of Switching Local ISO to UTC ISO
+
+1. String comparison bugs
+   - Existing reports, filters, or sorts may compare timestamp strings instead of parsed timestamps.
+   - Mixing -05:00 and Z formats can create subtle ordering or filtering issues.
+
+2. Date bucket shifts
+   - A local evening timestamp can become the next UTC calendar day.
+   - Example:
+     - 2026-06-18 23:30 CDT
+     - 2026-06-19T04:30:00Z
+   - Reports grouped by local day, month, or year could change unless the reporting code explicitly converts back to the intended local timezone.
+
+3. Mixed historical data
+   - Old rows may contain local-offset ISO strings.
+   - New rows may contain UTC ISO strings.
+   - This is valid ISO, but risky if application code assumes one format.
+
+4. Display changes
+   - User-facing screens may show different dates or times if they format stored values without explicitly choosing a timezone.
+
+5. Test or snapshot changes
+   - Tests expecting local-offset ISO strings may fail if updated code emits Zulu/UTC strings.
+
+Recommended Later Plan
+
+1. Safe first pass
+   - Replace raw new Date().toISOString() in request/debug tracking with Luxon UTC.
+   - Optionally update the pg dump filename timestamp to Luxon UTC.
+   - Extract shared B2P date helpers.
+   - Fix the module-load thisYear issue.
+
+2. Defer DB timestamp standardization
+   - Leave DateTime.local().toISO() DB writes unchanged until there is a focused audit of how those fields are read, filtered, grouped, and displayed.
+
+3. Audit before UTC migration
+   - Identify each timestamp column.
+   - Identify all report grouping logic.
+   - Identify any direct string comparisons.
+   - Decide whether the app contract is:
+     - local business time, or
+     - UTC storage with explicit local conversion at display/report boundaries.
+
+4. If UTC is later approved
+   - Add shared helpers:
+     - nowIsoUtc()
+     - parseIsoDateTime()
+     - formatBusinessDate()
+   - Update writes in one focused migration.
+   - Update reports to group in the chosen business timezone.
+   - Add tests for month/year boundary cases.
+
+Recommendation
+For B2P business dates such as packages sent, letters screened, and monthly/yearly reports, local-time semantics are probably safer unless the database has a clear UTC timestamp contract.
