@@ -17,7 +17,9 @@ export const Layout = (props: {
     <React.Fragment>
       {props.title && (
         <Head>
-          <title>{props.title} &ndash; Books to Prisoners Database</title>
+          <title>
+            {props.title} &ndash; {b2pDebugDefs.appTitle}
+          </title>
         </Head>
       )}
 
@@ -27,7 +29,7 @@ export const Layout = (props: {
 
       <div className={cssPrint.notPrintable}>
         <div className={css.headerBar}>
-          <div className={css.title}>Books to Prisoners Database</div>
+          <div className={css.title}>{b2pDebugDefs.appTitle}</div>
 
           <TopNavLinks />
         </div>

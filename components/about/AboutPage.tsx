@@ -4,6 +4,7 @@ import { getUrl } from '../../lib/urls'
 import { Card } from '../../common/components/card/Card'
 import { B2PGiphy } from '../../common/components/giphy/B2PGiphy'
 import { ClientOnly } from '../ClientOnly'
+import { b2pDebugDefs } from '../../lib/b2pDebugDefs'
 
 export const LGBTBooksToPrisonersLogo = () => {
   return (
@@ -20,7 +21,7 @@ export const LGBTBooksToPrisonersLogo = () => {
         </div>
         <div>
           <a href='https://lgbtbookstoprisoners.org/' target='_blank'>
-            LGBT Books to Prisoners
+            {b2pDebugDefs.organizationDisplayName}
           </a>{' '}
           Database
         </div>

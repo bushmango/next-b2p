@@ -8,6 +8,7 @@ import { db } from './lib/databaseB2P'
 import { l } from '../common/lib/lodash'
 import { parseB2PDate, B2PDateFormat } from '../components/people/sosB2P'
 import { DateTime } from 'luxon'
+import { b2pDebugDefs } from '../lib/b2pDebugDefs'
 
 export function installAll() {
   apiRegister('/reports/covid-update', runReport_covidUpdate)
@@ -236,7 +237,7 @@ export async function runReport_covidUpdate(
     //   query = query.where('search', 'like', '%' + c + '%')
     // })
 
-    let startDate = DateTime.fromISO('2019-01-01') // Jan 1 2019
+    let startDate = DateTime.fromISO(b2pDebugDefs.covidReportStartDate)
     const getMostRecentOrder = (
       r: any,
     ): { recent: DateTime | null; all: string; isValid: boolean } => {

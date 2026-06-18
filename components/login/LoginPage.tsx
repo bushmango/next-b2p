@@ -12,6 +12,7 @@ import { Stacked } from '../../common/components/stacked/Stacked'
 import { Spacer } from '../spacer/Spacer'
 import { AlignRight } from '../../common/components/align/AlignRight'
 import { ClientOnly } from '../ClientOnly'
+import { b2pDebugDefs } from '../../lib/b2pDebugDefs'
 
 export const LoginPage = () => {
   let state = sosUser.useSubscribe()
@@ -116,7 +117,7 @@ export const Login = (props: { state: IStateUser }) => {
         </form>
 
         <p>
-          LGBT Books to Prisoners use this username:
+          {b2pDebugDefs.organizationDisplayName} use this username:
           <br /> lgbtbookstoprisoners
         </p>
       </Card>
