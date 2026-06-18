@@ -1,0 +1,112 @@
+Monthly mail volume report screen plan
+Date: 2026-06-18
+
+Goal
+- Add a report screen that shows, by month for a selected year:
+  - Books sent per month
+  - Packages sent per month
+  - Letters screened per month
+
+Recommended route
+- Add a new page at /reports/monthly-mail-volume.
+- Add a component at components/reports/ReportMonthlyMailVolume.tsx.
+- Keep the existing Pages Router report pattern used by /reports/covid-update.
+
+Year filter
+- Add a year input/select at the top of the report.
+- Default to the current year.
+- Allow typing or stepping the year.
+- Fetch the report when the year changes.
+
+Data rules
+1. Packages sent per month
+   - Source: person json.Packages.
+   - Count a package when:
+     - Package Date parses with existing parseB2PDate.
+     - Parsed package year equals the selected year.
+     - Package is not IsDeleted.
+     - Package is not IsReturned.
+   - Month comes from package Date.
+
+2. Books sent per month
+   - Source: package Items.
+   - For each counted package, count package.Items where:
+     - Item is not IsDeleted.
+     - Item is not IsReturned.
+   - If a package has no Items array, count 0 books for that package.
+   - This measures actual books sent, not packages.
+
+3. Letters screened per month
+   - Source: person json.Screens.
+   - Count each screen date when:
+     - DateTime.fromISO(screenDate) is valid.
+     - Parsed screen year equals the selected year.
+   - Month comes from the ISO screen date.
+
+API plan
+- Add apiLib/apiReports.ts endpoint:
+  - /reports/monthly-mail-volume
+- Request body:
+  - year: number
+- Response:
+  {
+    year: 2026,
+    months: [
+      {
+        month: 1,
+        monthName: "January",
+        booksSent: 0,
+        packagesSent: 0,
+        lettersScreened: 0
+      },
+      ...
+    ],
+    totals: {
+      booksSent: 0,
+      packagesSent: 0,
+      lettersScreened: 0
+    }
+  }
+- Register the endpoint in apiReports.installAll().
+- Query b2p_people_v5 for current organization and deleted = false.
+- Keep report aggregation server-side to avoid sending all people records to the client.
+
+UI plan
+- Create a logged-in report page with:
+  - H1: Monthly Mail Volume
+  - Year filter input.
+  - Run/refresh button, or auto-refresh on year change after a small debounce.
+  - Summary totals row.
+  - Table with one row per month:
+    - Month
+    - Books Sent
+    - Packages Sent
+    - Letters Screened
+  - Optional simple visual bars inside the table cells for scanning.
+- Keep the first version table-based; do not add a chart dependency.
+- Add a nav path manually or link from an existing reports/admin area if needed.
+
+Client state plan
+- Add sosReports or extend sosAdmin only if that is the existing report pattern.
+- Recommended: create components/reports/sosReports.ts for report-specific state instead of adding more unrelated reporting state to sosAdmin.
+- State:
+  - selectedYear
+  - requestMonthlyMailVolume
+  - monthlyMailVolumeResult
+- Use apiRequest.post('/api/reports/monthly-mail-volume', { year }, ...).
+
+Validation
+- Run yarn type-check.
+- Run yarn lint.
+- Run yarn build.
+- Manually verify:
+  - /reports/monthly-mail-volume loads for logged-in users.
+  - Default year is current year.
+  - Changing year refreshes counts.
+  - Months with no activity still display as 0.
+  - Totals equal the sum of all month rows.
+
+Open implementation notes
+- Existing package dates use B2PDateFormat and parseB2PDate from components/people/sosB2P.
+- Existing screen dates are ISO strings from the newer screened-on list behavior.
+- If old screen data exists in another format, ignore invalid dates for the first pass and optionally add a later cleanup report.

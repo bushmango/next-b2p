@@ -1,12 +1,13 @@
 import Head from 'next/head'
 import React from 'react'
-import { InternalLink } from '../../common/components/internal-link/InternalLink'
-import { sosUser } from '../account/sosUser-sidecar'
+import { b2pDebugDefs } from '../../lib/b2pDebugDefs'
 import { ClientOnly } from '../ClientOnly'
 import cssPrint from '../people/print/Print.module.scss'
 import { Footer } from './Footer'
 import css from './Layout.module.scss'
+import { MaintenancePage } from './MaintenancePage'
 import { Redirect } from './Redirect'
+import { TopNavLinks } from './TopNavLinks'
 
 export const Layout = (props: {
   children: React.ReactNode
@@ -28,66 +29,18 @@ export const Layout = (props: {
         <div className={css.headerBar}>
           <div className={css.title}>Books to Prisoners Database</div>
 
-          <div className={css.links}>
-            <div className={css.link}>
-              <InternalLink href='/'>Home</InternalLink>
-            </div>
-            <div className={css.link}>
-              <InternalLink href='/about'>About</InternalLink>
-            </div>
-            <div className={css.link}>
-              <InternalLink href='/news'>News</InternalLink>
-            </div>
-            <ClientOnly>
-              <AuthLinks />
-            </ClientOnly>
-            {/* <div className={classes.link}>
-              <RazLink to='/books/search'>Book Search</RazLink>
-            </div> */}
-            {/* <div className={classes.link}>
-              <RazLink to='/api-test'>Api Test</RazLink>
-            </div> */}
-            {/* <div className={css.link}>
-                  <InternalLink href='/admin'>Admin</InternalLink>
-                </div> */}
-          </div>
+          <TopNavLinks />
         </div>
-        <div className={css.body}>{props.children}</div>
+        <div className={css.body}>
+          {b2pDebugDefs.featureFlag_maintenanceMode ? (
+            <MaintenancePage />
+          ) : (
+            props.children
+          )}
+        </div>
         <div>
           <Footer />
         </div>
-      </div>
-    </React.Fragment>
-  )
-}
-
-const AuthLinks = () => {
-  const state = sosUser.useSubscribe()
-  const isLoggedIn = !!state.token
-
-  if (!isLoggedIn) {
-    return (
-      <div className={css.link}>
-        <InternalLink href='/login'>Login</InternalLink>
-      </div>
-    )
-  }
-
-  return (
-    <React.Fragment>
-      <div className={css.link}>
-        <InternalLink href='/people/search'>People Search</InternalLink>
-      </div>
-      <div className={css.link}>
-        <InternalLink href='/state-restrictions'>
-          State Restrictions
-        </InternalLink>
-      </div>
-      <div className={css.link}>
-        <InternalLink href='/admin'>Admin (Database Backup)</InternalLink>
-      </div>
-      <div className={css.link}>
-        <InternalLink href='/login'>Logout</InternalLink>
       </div>
     </React.Fragment>
   )

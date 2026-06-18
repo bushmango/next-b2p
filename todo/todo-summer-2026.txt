@@ -7,7 +7,7 @@ M,T,Sa (10-3) are big database days
 from Stevie:
 
 - db migration
-- fix gliphy
+X fix gliphy
 
 - possibly add more filtering
 XX - show # of results in search and show more than 25 -- paging?
@@ -29,8 +29,6 @@ from Katherine:
 - simple report that shows packages sent by month
 - report for packages screened by month
 
-
-
 from Debbie:
 
 >> when a package gets returned, add a field for return reason?
@@ -44,7 +42,7 @@ also only clear the current day, not the whole history?]
 XX E - Different color icons for screening and packages in the search display?
 XX [also align them consistently]
 XX E- Ability to show more than the top N search results
-E - Something for saving notes about rejections/returns (maybe another text field associated with each
+>> E - Something for saving notes about rejections/returns (maybe another text field associated with each
  package that doesn't get printed on the invoice? or ability to save a list of Notes instead of just 
  having one text field that gets overwritten?).
 DELAY M - For end-of-year packages: December letters are often screened and filled in January and need to be 
