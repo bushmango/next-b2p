@@ -1,4 +1,4 @@
-@import '../css/mixins.scss';
+@use '../css/mixins.scss' as mixins;
 
 .inputText {
   margin: 0;
@@ -13,7 +13,7 @@
 
   outline: none;
 
-  @include focusHighlight();
+  @include mixins.focusHighlight();
 
   &.iconLeft {
     border-top-left-radius: 0px;

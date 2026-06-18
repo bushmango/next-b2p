@@ -2,7 +2,7 @@
   "name": "next-b2p",
   "version": "1.0.0",
   "scripts": {
-    "1": "yarn rimraf .next && yarn concurrently \"yarn dev\" \"yarn 2\" \"yarn sidecar\"",
+    "1": "node scripts/concurrently.js",
     "2": "yarn css-watch",
     "s": "yarn 1",
     "sidecar": "yarn barrel-rider-sidecar --remove --watch --src components lib common apiLib",
@@ -49,6 +49,7 @@
     "@types/react-dom": "^19.2.3",
     "barrel-rider-sidecar": "1.1.8",
     "concurrently": "6.3.0",
+    "console-title": "^1.1.0",
     "eslint": "^9",
     "eslint-config-next": "^16.2.9",
     "husky": "7.0.4",

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @mixin transition($args...) {
   -webkit-transition: $args;
   -moz-transition: $args;
@@ -16,12 +18,12 @@
   color: $textColor;
 
   &:hover {
-    background-color: darken($color, 10%);
-    color: darken($textColor, 20%);
+    background-color: color.adjust($color, $lightness: -10%);
+    color: color.adjust($textColor, $lightness: -20%);
   }
   &:active {
-    background-color: darken($color, 20%);
-    color: darken($textColor, 30%);
+    background-color: color.adjust($color, $lightness: -20%);
+    color: color.adjust($textColor, $lightness: -30%);
   }
 }
 

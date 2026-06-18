@@ -1,6 +1,7 @@
 import {
   faAngleDown,
   faArrowDown,
+  faBox,
   faBook,
   faCheck,
   faCheckCircle,
@@ -39,6 +40,7 @@ export const solidIcons = {
   faSyncAlt,
   faCheck,
   faCheckSquare,
+  faBox,
   faBook,
   faQuestionCircle,
   faCheckCircle,

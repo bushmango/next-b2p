@@ -1,0 +1,71 @@
+Plan: Fix Sass deprecation warnings
+Date: 2026-06-18
+
+Current warnings
+- Dart Sass warns that global color functions such as darken() are deprecated.
+- Dart Sass warns that @import is deprecated and should be replaced with @use.
+
+Affected files
+- common/components/badge/Badge.module.scss
+  - darken($color, 10%)
+  - darken($textColor, 20%)
+  - darken($color, 20%)
+  - darken($textColor, 30%)
+- common/components/button/Button.module.scss
+  - darken($color, 10%)
+  - darken($textColor, 20%)
+  - darken($color, 20%)
+  - darken($textColor, 30%)
+- common/components/card/Card.module.scss
+  - darken(#b4dfe5, 10%)
+  - darken(#b4dfe5, 5%)
+  - commented darken(lightgrey, 10%) can be removed or updated while nearby.
+- common/components/input/Input.module.scss
+  - @import '../css/mixins.scss'
+- components/people/print/Print.module.scss
+  - darken(red, 20%)
+
+Recommended migration
+1. Replace global darken() calls with sass:color.
+   - Add @use 'sass:color'; to files that use color helpers.
+   - Prefer color.adjust($color, $lightness: -N%) for closest behavior to darken().
+   - Example:
+     - darken($color, 10%)
+     - color.adjust($color, $lightness: -10%)
+
+2. Replace @import with @use for shared mixins.
+   - Update common/components/input/Input.module.scss:
+     - @use '../css/mixins.scss' as mixins;
+     - @include mixins.focusHighlight();
+   - Leave common/components/css/mixins.scss as the shared module unless several files need it later.
+
+3. Keep visual behavior stable.
+   - Do not switch to color.scale() in this pass unless we intentionally want slightly different computed colors.
+   - color.adjust() maps more directly to the existing darken() intent.
+   - For black text colors, color.adjust(black, $lightness: -20%) remains black, matching the current output.
+
+4. Optional cleanup while editing.
+   - Badge.module.scss and Button.module.scss duplicate the same transition and button mixins.
+   - Do not refactor them in the first pass unless the change remains very small.
+   - If refactoring, move the duplicated button mixin to common/components/css/mixins.scss and consume it with @use.
+
+Implementation order
+1. Update Button.module.scss and Badge.module.scss with @use 'sass:color' and color.adjust().
+2. Update Card.module.scss with @use 'sass:color' and color.adjust().
+3. Update Print.module.scss with @use 'sass:color' and color.adjust().
+4. Update Input.module.scss from @import to @use and namespace the mixin include.
+5. Run a source search for any remaining deprecated Sass usage:
+   - darken(
+   - lighten(
+   - adjust-hue(
+   - saturate(
+   - desaturate(
+   - @import
+6. Run yarn build and confirm the Sass deprecation warnings are gone.
+7. Run yarn type-check if generated SCSS module typings changed unexpectedly.
+
+Acceptance criteria
+- yarn build succeeds.
+- Build output no longer contains Sass deprecation warnings for darken() or @import.
+- No generated .scss.d.ts churn unless it is intentional.
+- Visual styling remains effectively unchanged for buttons, badges, cards, input focus, and print labels.

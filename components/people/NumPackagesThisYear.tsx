@@ -1,16 +1,39 @@
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { Icon, solidIcons } from '../../common/components/icon/Icon'
 import { l } from '../../common/lib/lodash'
 import { sosB2P } from './sosB2P-sidecar'
 
 const CountIcons = (props: {
   count: number
-  icon: typeof solidIcons.faBook
+  icon: IconDefinition
 }) => {
   return (
     <div style={{ paddingTop: '2px' }}>
       {l.map(l.times(props.count), (c) => (
         <Icon key={c} icon={props.icon} />
       ))}
+    </div>
+  )
+}
+
+const CountIconWithMultiplier = (props: {
+  count: number
+  icon: IconDefinition
+}) => {
+  if (props.count <= 0) {
+    return <div style={{ paddingTop: '2px' }} />
+  }
+
+  return (
+    <div
+      style={{
+        display: 'inline-flex',
+        paddingTop: '2px',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <Icon icon={props.icon} />
+      {props.count > 1 && <span> x{props.count}</span>}
     </div>
   )
 }
@@ -39,9 +62,9 @@ export const NumPackagesSentThisYear = (props: { json: any }) => {
     sosB2P.calcNumUnreturnedPackages(props.json)
 
   return (
-    <CountIcons
+    <CountIconWithMultiplier
       count={totalUnreturnedPackagesThisYear}
-      icon={solidIcons.faBook}
+      icon={solidIcons.faBox}
     />
   )
 }
