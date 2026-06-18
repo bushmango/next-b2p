@@ -351,7 +351,7 @@ export const parseB2PDate = (date: string) => {
 }
 
 export const isB2PDateToday = (date: string, todayDate: string = '') => {
-  let parsedTodayDate = DateTime.local()
+  let parsedTodayDate: DateTime = DateTime.local()
   if (todayDate) {
     parsedTodayDate = parseB2PDate(todayDate) || DateTime.local()
   }
