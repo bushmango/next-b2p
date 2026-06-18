@@ -1,9 +1,10 @@
 import { nanoid } from 'nanoid'
-import * as uuid from 'uuid'
+import { v4 as uuidV4 } from 'uuid'
+
 export const generateId = (): string => {
   return nanoid()
 }
 
 export const generateUuidV4 = (): string => {
-  return uuid.v4()
+  return uuidV4()
 }
