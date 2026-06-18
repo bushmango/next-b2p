@@ -9,12 +9,22 @@ function getDatabaseNameFromConnectionString(connectionString: string) {
   }
 }
 
+function getKnexConnectionFromConnectionString(connectionString: string) {
+  let url = new URL(connectionString)
+  let sslMode = url.searchParams.get('sslmode') || ''
+  url.searchParams.delete('sslmode')
+
+  return {
+    connectionString: url.toString(),
+    ...(sslMode && sslMode !== 'disable'
+      ? { ssl: { rejectUnauthorized: false } }
+      : {}),
+  }
+}
+
 const connectionString = process.env.DB_CONNECTION_STRING
 const connection = connectionString
-  ? {
-      connectionString,
-      ssl: { rejectUnauthorized: false },
-    }
+  ? getKnexConnectionFromConnectionString(connectionString)
   : {
       database: process.env.DB_NAME,
       host: process.env.DB_HOST,

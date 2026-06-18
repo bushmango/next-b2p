@@ -16,3 +16,25 @@
   vertical-align: top;
   padding-top: 6px;
 }
+
+.packageNotesHeader {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.titleLayout {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.saveIndicator {
+  font-size: 12px;
+  font-weight: normal;
+  color: #555;
+}
+
+.saveError {
+  color: #b00020;
+}

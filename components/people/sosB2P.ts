@@ -151,6 +151,9 @@ export async function fetchPerson(guid: string) {
   await apiRequest.post<any>('/api/people/get', { guid }, (r) => {
     getSos().change((ds) => {
       ds.requestPerson = r
+      if (r.isFetching) {
+        ds.requestSetPerson = {}
+      }
       if (r.isSuccess) {
         ds.editPerson = l.cloneDeep(r.response.record)
         // Fix missing ids
@@ -293,6 +296,7 @@ export function addBookToTodaysPackage() {
       a = {
         Date: formatToday(),
         Items: [],
+        Notes: '',
         id: generateId(),
       }
       if (!ds.editPerson.json.Packages) {

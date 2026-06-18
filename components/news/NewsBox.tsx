@@ -12,6 +12,13 @@ export const NewsBox = () => {
           <li>6/12/2026 - Maintenance Update</li>
           <li>Update people search columns</li>
           <li>Fix Giphy API integration</li>
+          <li>Add reports page and monthly mail volume report</li>
+          <li>Add future mail activity report</li>
+          <li>Added package-level notes</li>
+          <li>Backed up and moved database</li>
+          <li>Fixed history screening dates</li>
+          <li>More search results</li>
+          <li>Larger notes</li>
         </ul>
       </div>
       <div>
