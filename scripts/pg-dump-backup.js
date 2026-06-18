@@ -53,6 +53,30 @@ function safeFilenamePart(value) {
   return value.replace(/[^a-zA-Z0-9._-]/g, '_')
 }
 
+function getSourceConnectionParts(env) {
+  const connectionString = env.DB_CONNECTION_STRING || process.env.DB_CONNECTION_STRING
+  if (connectionString) {
+    const url = new URL(connectionString)
+    return {
+      dbName: decodeURIComponent(url.pathname.replace(/^\//, '')),
+      host: url.hostname,
+      port: url.port,
+      user: decodeURIComponent(url.username),
+      password: decodeURIComponent(url.password),
+      sslMode: url.searchParams.get('sslmode') || '',
+    }
+  }
+
+  return {
+    dbName: requireValue(env, 'DB_NAME'),
+    host: requireValue(env, 'DB_HOST'),
+    port: env.DB_PORT || process.env.DB_PORT || '',
+    user: requireValue(env, 'DB_USERNAME'),
+    password: requireValue(env, 'DB_PASSWORD'),
+    sslMode: env.DB_SSLMODE || process.env.DB_SSLMODE || 'require',
+  }
+}
+
 function getPgDumpExecutable(env) {
   const toolsLocation = env.PG_TOOLS_LOCATION || process.env.PG_TOOLS_LOCATION
   if (!toolsLocation) {
@@ -119,11 +143,8 @@ async function main() {
   }
 
   const env = parseEnvFile(envPath)
-  const dbName = requireValue(env, 'DB_NAME')
-  const host = requireValue(env, 'DB_HOST')
-  const user = requireValue(env, 'DB_USERNAME')
-  const password = requireValue(env, 'DB_PASSWORD')
-  const sslMode = env.DB_SSLMODE || process.env.DB_SSLMODE || 'require'
+  const { dbName, host, port, user, password, sslMode } =
+    getSourceConnectionParts(env)
   const pgDumpExecutable = getPgDumpExecutable(env)
   const dumpTables = getDumpTables(env)
 
@@ -148,6 +169,10 @@ async function main() {
     outputPath,
   ]
 
+  if (port) {
+    args.push('-p', port)
+  }
+
   for (const table of dumpTables) {
     args.push('--table', table)
   }
@@ -161,7 +186,7 @@ async function main() {
     env: {
       ...process.env,
       PGPASSWORD: password,
-      PGSSLMODE: sslMode,
+      ...(sslMode ? { PGSSLMODE: sslMode } : {}),
     },
     stdio: 'inherit',
     shell: false,

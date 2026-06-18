@@ -7,7 +7,34 @@ DB_NAME=""
 DB_HOST=""
 DB_USERNAME=""
 DB_PASSWORD=""
+
+# Optional. Preferred source/current database connection string. If present,
+# the app, db:dump, and db:verify-restore use this instead of DB_HOST,
+# DB_USERNAME, and DB_PASSWORD.
+# Example: DB_CONNECTION_STRING="postgres://user:password@host:25061/database?sslmode=require"
+DB_CONNECTION_STRING=""
+
+# Optional. PostgreSQL client tools folder or executable path used by db dump/restore scripts.
+# Windows folder example: PG_TOOLS_LOCATION="C:\Program Files\PostgreSQL\16\bin"
+# Windows executable example: PG_TOOLS_LOCATION="C:\Program Files\PostgreSQL\16\bin\pg_dump.exe"
 PG_TOOLS_LOCATION=""
+
+# Optional. Comma-separated table list for db:dump. Use "*" to dump all tables.
 PG_DUMP_TABLES="public.b2p_people_v5"
+
+# Optional. Admin/maintenance connection used by db:restore, db:verify-restore,
+# and db:grant-restore-access. This should connect to an existing database,
+# not the database being created/restored.
+# Example: DB_RESTORE_CONNECTION_STRING="postgres://user:password@host:25061/defaultdb?sslmode=require"
+DB_RESTORE_CONNECTION_STRING=""
+
+# Optional. Name of the restore database to create, verify, or grant access to.
+# db:restore refuses to overwrite this database if it already exists.
+DB_RESTORE_DATABASE_NAME=""
+
+# Optional. Database role/user that should receive access to the restored database.
+# Used by db:grant-restore-access.
+DB_GRANT_USERNAME=""
+
 APIKEY_GOOGLEBOOKS=""
 GIPHY_KEY=""
