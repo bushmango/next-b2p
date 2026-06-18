@@ -1,0 +1,282 @@
+B2P Security Audit - 2026-06-18
+
+Scope
+- Reviewed the Next.js B2P app source, API gateway, API handlers, auth flow, admin backup flow, database connection setup, state restrictions, reports, Giphy/books integrations, and local PostgreSQL backup/restore scripts.
+- Ran dependency audit with: yarn audit --groups dependencies
+- Ran critical-only dependency audit with: yarn audit --groups dependencies --level critical
+- Did not inspect git history, deployment provider settings, production env values, DNS, database roles, cloud firewall rules, or actual production logs.
+
+Current Overall Assessment
+- Risk level: High.
+- The highest-risk item remains the custom auth model: a static bearer token is returned to the browser, stored in localStorage, and accepted indefinitely.
+- The backup endpoint is safer than the prior audit because it now uses POST and no longer sends the token in the URL. It still exports sensitive records to any logged-in user because all users are effectively admins.
+- No app API DELETE, truncate, or drop-table operations were found. Deletion remains implemented as soft-delete updates.
+- Several database and script changes are directionally good: backups are ignored by git, restore refuses to overwrite an existing database, and database identifiers are quoted in restore/grant scripts.
+- Dependency audit still reports a large number of advisories: 113 total, including 3 critical and 66 high.
+
+High Priority Findings
+
+1. Static browser-visible bearer token grants persistent API access
+- Evidence:
+  - apiLib/apiAccount.ts reads LGBTB2P_USERNAME, LGBTB2P_PASSWORD, and LGBTB2P_TOKEN from process.env.
+  - apiLib/apiAccount.ts returns LGBTB2P_TOKEN to the browser after username/password match.
+  - apiLib/apiAccount.ts checkToken accepts that same token as the only API auth proof.
+  - common/lib/request/apiRequest.ts stores api:authToken and api:authUsername in localStorage.
+  - components/account/sosUser.ts also stores username/token in SOS localStorage state.
+- Risk:
+  - Any XSS, browser extension, shared workstation, copied localStorage value, or leaked token gives persistent API access until the global token is rotated.
+  - There is no per-user accountability, expiry, revocation, or session invalidation.
+- Recommendation:
+  - Replace static token auth with server-side sessions.
+  - Store session id in Secure, HttpOnly, SameSite cookies.
+  - Add expiry, rotation, logout invalidation, and per-user records.
+  - Store passwords via a real identity provider or a strong password hash instead of raw env var comparison.
+
+2. All logged-in users are admins
+- Evidence:
+  - components/account/sosUser.ts ensureAdmin returns ensureLoggedIn with the comment "All users admins for now".
+  - components/layout/TopNavLinks.tsx shows Admin (Database Backup) for any logged-in user.
+  - apiLib/apiBackupDatabase.ts checks only checkToken.
+  - apiLib/apiPeople.ts exposes rebuildSearchIndex to any token holder.
+  - apiLib/apiStateRestrictions.ts exposes setupAndSeed/add/set/search to any token holder when called directly, regardless of whether the page link is feature-flagged.
+- Risk:
+  - Any valid login can export the people database, soft-delete records, edit all people, edit state restrictions, run reports, and rebuild search indexes.
+  - Feature flags hide UI, but they do not enforce server-side authorization.
+- Recommendation:
+  - Add server-side roles/scopes such as viewer, editor, report_user, admin, backup_admin.
+  - Check role permissions in each API handler, not only in navigation.
+  - Restrict backup export, state seeding, and index rebuild to admin roles.
+
+3. No rate limiting, login throttling, or lockout
+- Evidence:
+  - apiLib/apiAccount.ts login accepts repeated attempts with no rate limit.
+  - apiLib/lib/apiUtil.ts has no IP/user throttling.
+  - apiLib/apiGiphy.ts exposes an anonymous Giphy proxy with no rate limit.
+  - apiLib/apiBooks.ts proxies Google Books search for authenticated users with no request limit.
+- Risk:
+  - Login can be brute-forced.
+  - Anonymous Giphy requests can consume quota.
+  - Authenticated search/report endpoints can be abused for resource exhaustion.
+- Recommendation:
+  - Add per-IP and per-account rate limiting for login.
+  - Add progressive delay or temporary lockout after failed login attempts.
+  - Add rate limits for anonymous Giphy and expensive authenticated endpoints.
+  - Log failed login attempts without logging credentials.
+
+4. Runtime database TLS verification is disabled for sslmode=require
+- Evidence:
+  - apiLib/lib/databaseB2P.ts maps connection strings with sslmode not equal to disable to ssl: { rejectUnauthorized: false }.
+  - scripts/pg-restore-backup.js, scripts/pg-verify-restore.js, and scripts/pg-grant-restore-access.js do the same.
+- Risk:
+  - This avoids self-signed certificate failures, but it also disables certificate chain verification and increases man-in-the-middle risk.
+  - For sensitive personal records, this should be a temporary compatibility measure, not the long-term default.
+- Recommendation:
+  - Configure the provider CA certificate and use rejectUnauthorized: true.
+  - Add an env variable for the CA path or certificate contents.
+  - Keep rejectUnauthorized: false only as an explicit local/dev escape hatch with a loud warning.
+
+5. Dependency audit reports critical/high vulnerabilities
+- Evidence:
+  - yarn audit --groups dependencies reported 113 vulnerabilities across 504 audited packages:
+    - 12 low
+    - 32 moderate
+    - 66 high
+    - 3 critical
+  - Critical findings are minimist prototype pollution through barrel-rider-sidecar > ts-node-dev paths.
+  - High findings include knex, luxon, lodash, and transitive packages.
+- Risk:
+  - Some high/critical advisories appear to be development/sidecar-related, but barrel-rider-sidecar is currently listed in dependencies, not devDependencies.
+  - Production dependency advisories increase deployment risk and complicate triage.
+- Recommendation:
+  - Move build/dev-only tooling such as barrel-rider-sidecar, concurrently, rimraf, typed-scss-modules, and related sidecar tooling to devDependencies where possible.
+  - Upgrade knex to a modern supported major version.
+  - Upgrade luxon to a patched version.
+  - Review lodash advisory applicability; the installed direct lodash is 4.17.21, but audit is reporting advisories requiring versions beyond current published 4.x, so validate with npm audit metadata before taking disruptive action.
+  - Re-run yarn audit after dependency cleanup and record residual accepted risk.
+
+6. Backup export endpoint can return sensitive full records to any logged-in user
+- Evidence:
+  - components/admin/AdminPage.tsx calls /api/admin/backup-database via POST with token, group, min, max, and backupStartedAt.
+  - apiLib/apiBackupDatabase.ts returns zipped JSON rows from b2p_people_v5 for the user's organization.
+  - The endpoint includes deleted records by design.
+  - There is no server-side export audit log, role check, limit cap, or explicit backup confirmation.
+- Improvements since the prior audit:
+  - Token is no longer in the backup URL query string.
+  - The endpoint now rejects non-POST with 405.
+  - Download filenames include a backup timestamp.
+  - backups/ is ignored by git.
+- Remaining risk:
+  - A compromised token or any logged-in user can export the people table.
+  - min/max are client-controlled. The UI sends 7,500-row parts, but the server does not enforce that maximum.
+  - Downloaded files land wherever the browser saves them and are not encrypted by the app.
+- Recommendation:
+  - Require an admin/export role server-side.
+  - Enforce max page size server-side.
+  - Add explicit confirmation before exporting all parts.
+  - Add an audit log entry for each export: user, time, organization, range, row count.
+  - Consider encrypting backup archives or documenting required secure handling.
+
+Medium Priority Findings
+
+7. No CSRF/origin protection on API requests
+- Evidence:
+  - common/lib/request/apiRequest.ts sends token in JSON body.
+  - apiLib/lib/apiUtil.ts validates only method and token.
+  - There are no Origin, Referer, Fetch Metadata, or CSRF token checks.
+- Risk:
+  - Current localStorage bearer-token auth is less directly CSRF-prone than cookie auth because browsers do not automatically attach the token to cross-site requests.
+  - If auth is moved to cookies, CSRF protection becomes mandatory.
+  - Missing Origin checks also weakens defense-in-depth against confused browser contexts.
+- Recommendation:
+  - Add Origin/Referer validation for state-changing endpoints.
+  - When cookie sessions are added, add SameSite cookies and CSRF tokens or Fetch Metadata enforcement.
+
+8. API error/status handling makes monitoring harder
+- Evidence:
+  - apiLib/lib/apiUtil.ts returns HTTP 200 for not-allowed and not-logged-in.
+  - apiLib/api.ts returns HTTP 200 for no-path and no-api.
+  - apiLib/apiBackupDatabase.ts is better and returns 405/401.
+- Risk:
+  - Logs, monitors, and clients cannot reliably distinguish auth failures or method misuse from successful requests.
+  - This can hide probing and failed attacks.
+- Recommendation:
+  - Standardize auth failures to 401, forbidden actions to 403, bad methods to 405, bad input to 400.
+  - Keep JSON error bodies but use meaningful HTTP status codes.
+
+9. Whole-record JSON updates lack schema validation
+- Evidence:
+  - apiLib/apiPeople.ts set accepts json from the request and writes it directly to b2p_people_v5.json.
+  - apiLib/apiStateRestrictions.ts set accepts json and writes it directly to b2p_state_restrictions_v1.json.
+- Risk:
+  - Any authenticated editor can accidentally or intentionally corrupt record shape.
+  - Oversized notes/packages/screens data could bloat rows or degrade search/report performance.
+  - Future UI assumptions can break on malformed JSON.
+- Recommendation:
+  - Add schema validation for people and state restrictions payloads.
+  - Enforce maximum lengths for notes, package fields, facility fields, and array counts.
+  - Validate dates before persisting.
+  - Reject unknown top-level fields unless intentionally allowed.
+
+10. Runtime DB user likely has more privilege than the app needs
+- Evidence:
+  - apiLib/apiStateRestrictions.ts ensureStateRestrictionsTable creates b2p_state_restrictions_v1 from runtime API code.
+  - scripts/pg-grant-restore-access.js grants usage, create on schema public and select/insert/update on all tables.
+  - App code uses insert/update/select and soft deletes, not hard deletes.
+- Risk:
+  - If the app process is compromised, CREATE privileges allow an attacker to create objects in public schema.
+  - Broad update privileges allow modification of all table data.
+- Recommendation:
+  - Move schema creation to migrations run by an admin/migration user.
+  - Remove CREATE from the production runtime DB user after migrations.
+  - Grant only connect, usage on schema, select/insert/update on required tables, and sequence permissions needed for inserts.
+  - Keep no DELETE unless a future hard-delete feature explicitly requires it.
+
+11. Search and report endpoints can scan broad data sets
+- Evidence:
+  - apiLib/apiPeople.ts search caps display at 50/51 records, which is good.
+  - apiLib/apiReports.ts monthly and future mail activity reports scan all non-deleted people for an organization.
+  - apiLib/apiReports.ts covid report scans all non-deleted people when feature flag allows it.
+  - apiLib/apiBackupDatabase.ts exports potentially large ranges.
+- Risk:
+  - Authenticated users can repeatedly run expensive reports/export calls.
+  - With no rate limit, this can become a performance or availability issue.
+- Recommendation:
+  - Add server-side rate limits.
+  - Add query timeouts where supported.
+  - Add indexes for organization/deleted/search/date-derived reporting if usage grows.
+
+12. Feature flags are UI/config gates, not security controls
+- Evidence:
+  - pages/state-restrictions.tsx hides the page when featureFlag_allowStateRestrictionsPage is false.
+  - components/layout/TopNavLinks.tsx hides the nav link when the flag is false.
+  - apiLib/apiGateway.ts still registers /stateRestrictions/search, /set, /add, and /setupAndSeed.
+  - lib/b2pDebugDefs.ts has maintenance mode, state restrictions, seed, and covid report flags.
+- Risk:
+  - Anyone with a valid token can call registered endpoints directly even when UI is hidden unless the handler checks the flag or role.
+  - Maintenance mode hides pages through Layout, but API endpoints are still reachable.
+- Recommendation:
+  - Treat feature flags as display controls only.
+  - Add server-side feature-flag checks for endpoints that should be unavailable.
+  - Add maintenance-mode API behavior if maintenance should block writes.
+
+13. Anonymous Giphy proxy can be used to consume API quota
+- Evidence:
+  - apiLib/apiGiphy.ts uses postAnonJson.
+  - It limits tag length to 50 and keeps GIPHY_KEY server-side, which is good.
+  - No rate limit or origin check is present.
+- Risk:
+  - External callers can hit /api/giphy/random and burn quota.
+- Recommendation:
+  - Require auth for Giphy if it is only needed after login, or add anonymous rate limits.
+  - Consider a small cache for random responses per tag.
+
+Low Priority / Defense-in-Depth Findings
+
+14. Security headers are not configured in the repo
+- Evidence:
+  - No next.config security headers were found in the repo.
+- Risk:
+  - Deployment may rely entirely on platform defaults.
+  - Missing CSP, frame-ancestors, Referrer-Policy, X-Content-Type-Options, and Permissions-Policy reduces browser defense-in-depth.
+- Recommendation:
+  - Add Next.js headers for:
+    - Content-Security-Policy
+    - X-Content-Type-Options: nosniff
+    - Referrer-Policy
+    - Permissions-Policy
+    - frame-ancestors 'none' or approved origins
+  - Confirm HSTS at the hosting/proxy layer.
+
+15. Login comparison is direct string equality and username lowercasing is ineffective
+- Evidence:
+  - apiLib/apiAccount.ts calls username.toLowerCase() but does not assign the result.
+  - It compares username/password directly to env values.
+- Risk:
+  - Usability bug for username case.
+  - Direct comparison is less important than the broader auth design issue, but it should be cleaned up during auth replacement.
+- Recommendation:
+  - Normalize username before comparison if keeping this temporarily.
+  - Replace with proper identity/session model.
+
+16. Local restore scripts disable TLS verification and use powerful credentials
+- Evidence:
+  - scripts/pg-restore-backup.js creates a database and runs pg_restore.
+  - scripts/pg-grant-restore-access.js grants database/schema/table/sequence privileges.
+  - Both can use rejectUnauthorized: false for sslmode.
+- Positive controls:
+  - Restore asks for y/N confirmation.
+  - Restore refuses to overwrite an existing database.
+  - Identifiers are quoted.
+  - spawn uses shell: false for pg_dump/pg_restore.
+- Recommendation:
+  - Add a second confirmation showing host, admin database, target database, and dump path.
+  - Avoid rejectUnauthorized: false in production/admin use.
+  - Keep admin connection strings out of shells/logs/screenshots.
+
+What Looks Good
+- No hard DELETE operations were found in app API code.
+- No dangerouslySetInnerHTML usage was found.
+- SQL queries generally use Knex parameterization instead of concatenating user values.
+- Search result display is capped at 50 with a one-row lookahead.
+- Backup files and .env.local are ignored by git.
+- pg_dump/pg_restore scripts use spawn with shell: false and pass passwords through environment variables instead of command-line args.
+- Restore script refuses to overwrite an existing database.
+- Grant script quotes identifiers and checks the target role exists before granting.
+- Giphy key stays server-side and image URLs are normalized to https.
+
+Recommended Next Work, In Order
+1. Add server-side roles and restrict admin/export/index/seed endpoints.
+2. Replace static token/localStorage auth with HttpOnly cookie sessions, expiry, and logout invalidation.
+3. Add login and API rate limiting.
+4. Enforce server-side backup page-size limits and add backup audit logging.
+5. Move schema creation out of runtime API code and reduce runtime DB user privileges.
+6. Fix TLS verification by configuring provider CA certificates.
+7. Clean up dependency advisories, especially moving dev-only tools out of dependencies and upgrading knex/luxon.
+8. Add JSON schema validation and max field lengths for people and state restriction writes.
+9. Add security headers and CSRF/origin protection.
+10. Add server-side feature-flag/maintenance checks for endpoints, not just UI links.
+
+Notes
+- Prior audit item "backup token in URL" appears addressed: the current admin backup flow uses POST and sends token in the JSON body.
+- This does not make the backup flow low-risk; it only removes the URL leakage path.
+- If .env.local or real secrets were ever committed before being removed, rotate those secrets. This audit did not inspect git history.

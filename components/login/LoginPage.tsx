@@ -43,6 +43,8 @@ export const Logout = (props: { state: IStateUser }) => {
           </div>
         </div>
 
+        <B2PGiphy />
+
         <Button
           onClick={() => {
             sosUser.logout()

@@ -1,6 +1,4 @@
 import React from 'react'
-import { Card } from '../../common/components/card/Card'
-import { B2PGiphy } from '../../common/components/giphy/B2PGiphy'
 import { InternalLink } from '../../common/components/internal-link/InternalLink'
 import { Layout } from '../layout/Layout'
 import css from './Home.module.scss'
@@ -20,12 +18,6 @@ export const HomePage = () => {
           Welcome to the {b2pDebugDefs.organizationDisplayName} Database{' '}
         </h2>
         <div>{process.env.NEXT_PUBLIC_MOTD || '[MOTD placeholder]'}</div>
-
-        <ClientOnly>
-          <Card>
-            <B2PGiphy />
-          </Card>
-        </ClientOnly>
 
         <ClientOnly>
           <Login state={state} />
