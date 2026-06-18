@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-unfetch'
 import { l } from '../lodash'
 import {
   createError,

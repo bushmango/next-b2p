@@ -1,0 +1,118 @@
+B2P Lodash Usage Audit - 2026-06-18
+
+Purpose
+- Audit current Lodash usage before deciding whether to address remaining Lodash advisories.
+- This report was requested after applying the non-Lodash dependency advisory fixes.
+
+Commands Run
+- rg -n "lodash" . --glob "!node_modules/**" --glob "!.next/**" --glob "!tsconfig.tsbuildinfo"
+- rg -n "\.template\(|\.unset\(|\.omit\(|template\(|unset\(|omit\(" . --glob "!node_modules/**" --glob "!.next/**" --glob "!tsconfig.tsbuildinfo"
+- rg -n "\bl\.([A-Za-z_][A-Za-z0-9_]*)|\blodash\.([A-Za-z_][A-Za-z0-9_]*)|\bfp\.([A-Za-z_][A-Za-z0-9_]*)|\b_[.]([A-Za-z_][A-Za-z0-9_]*)" apiLib common components lib pages --glob "!node_modules/**" --glob "!.next/**"
+- yarn why lodash
+
+Summary
+- Lodash is used broadly as a general utility library.
+- No app usage of Lodash template, unset, or omit was found.
+- No app usage of Function() tied to Lodash templating was found.
+- Current remaining Lodash advisories are therefore most concerning if:
+  - the app starts using _.template with untrusted imports keys, or
+  - the app uses _.unset / _.omit with untrusted array paths, or
+  - a transitive dependency uses those APIs unsafely.
+
+Installed Lodash Copies
+- lodash@4.17.21
+  - Direct app dependency.
+  - Hoisted from concurrently and google-books-search as well.
+- barrel-rider-sidecar > lodash@4.17.20
+  - Dev tooling path after barrel-rider-sidecar was moved to devDependencies.
+- knex > lodash@4.18.1
+  - Pulled by upgraded knex.
+
+Direct Lodash Imports
+- apiLib/apiPeople.ts
+- apiLib/apiStateRestrictions.ts
+- apiLib/lib/searchIndex.ts
+- components/people/edit/AddABook.tsx
+- components/people/edit/BookSearchResults.tsx
+- components/people/edit/EditPackages.tsx
+- components/people/edit/ScreenLetter.tsx
+- components/people/print/PrintPerson.tsx
+
+Shared common/lib/lodash Wrapper Imports
+- apiLib/apiReports.ts
+- apiLib/lib/apiArguments.ts
+- apiLib/lib/apiUtil.ts
+- common/components/giphy/Giphy.tsx
+- common/components/input/Input.tsx
+- common/lib/log.ts
+- common/lib/request/apiRequest.ts
+- common/lib/sos/sos.ts
+- components/admin/sosAdmin.ts
+- components/people/NumPackagesThisYear.tsx
+- components/people/edit/EditPersonDetails.tsx
+- components/people/search/PeopleSearch.tsx
+- components/people/sosB2P.ts
+- components/stateRestrictions/StateRestrictionsPage.tsx
+- components/stateRestrictions/sosStateRestrictions.ts
+
+Wrapper Definition
+- common/lib/lodash.ts imports:
+  - lodash from 'lodash'
+  - fp from 'lodash/fp'
+- It wraps lodash with guard replacements for lowerCase and clone, plus exposes forReals_lowerCase and forReals_clone.
+
+Observed Lodash APIs In App Code
+- Collection/list utilities:
+  - map
+  - forEach
+  - filter
+  - some
+  - take
+  - sortBy
+  - orderBy
+  - range
+  - times
+  - sumBy
+- Object/value utilities:
+  - assign
+  - cloneDeep
+  - values
+  - isNil
+  - isString
+  - isBoolean
+  - isNumber
+  - isNaN
+  - isFunction
+- Search/selection/string helpers:
+  - find
+  - join
+  - split
+  - sample
+- Timing:
+  - debounce
+
+Advisory-Specific Risk Check
+- _.template:
+  - No app usage found.
+  - Direct advisory relevance appears low for current app code.
+- _.unset:
+  - No app usage found.
+  - Direct advisory relevance appears low for current app code.
+- _.omit:
+  - No app usage found.
+  - Direct advisory relevance appears low for current app code.
+
+Recommendation
+- Do not make a broad Lodash replacement as part of the current dependency cleanup.
+- Next best options:
+  1. Keep Lodash pinned and document accepted residual risk because risky APIs are not used in app code.
+  2. If the registry has a real lodash 4.18.x package available and compatible, test upgrading direct lodash separately.
+  3. Replace direct imports with the existing common/lib/lodash wrapper over time for consistency.
+  4. Consider gradually replacing simple usages with native JS only when touching nearby code; avoid a sweeping refactor.
+- Add a lint/search guard or code review rule: do not introduce _.template, _.unset, or _.omit with untrusted input.
+
+Remaining Related Audit Notes
+- Production audit after non-Lodash fixes reports 7 advisories:
+  - 2 high
+  - 5 moderate
+- Remaining advisories are Lodash-related plus next > postcss.

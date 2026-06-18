@@ -102,7 +102,7 @@ export const PeopleSearch = () => {
                 className={cssTable.headerVertical}
                 title='Packages sent this year'
               >
-                <Icon icon={solidIcons.faBook} />
+                <Icon icon={solidIcons.faBox} />
               </th>
               <th
                 className={cssTable.headerVertical}
@@ -171,7 +171,7 @@ export const PeopleSearch = () => {
         <Spacer />
 
         <div>
-          *<Icon icon={solidIcons.faBook} /> Packages sent this year
+          *<Icon icon={solidIcons.faBox} /> Packages sent this year
         </div>
         <div>
           *<Icon icon={solidIcons.faEnvelopeOpenText} /> Letters screened this

@@ -1,0 +1,98 @@
+B2P Dependency Audit Baseline - 2026-06-18
+
+Purpose
+- Baseline for fixing security audit finding 5: critical/high dependency vulnerabilities.
+- This file records the before state before moving dev-only tooling or upgrading runtime dependencies.
+
+Commands Run
+- yarn audit --groups dependencies --json
+- yarn why minimist
+- yarn why knex
+- yarn why luxon
+- yarn why lodash
+- yarn why barrel-rider-sidecar
+- yarn why concurrently
+- yarn why rimraf
+- yarn why typed-scss-modules
+- yarn why nanoid
+- yarn why uuid
+
+Audit Summary
+- Packages audited: 504
+- Total vulnerabilities: 113
+- Low: 12
+- Moderate: 32
+- High: 66
+- Critical: 3
+
+Critical Findings
+- Critical advisories are all minimist prototype pollution paths.
+- yarn why minimist:
+  - minimist@1.2.0 is hoisted from:
+    - barrel-rider-sidecar > ts-node-dev > minimist
+    - barrel-rider-sidecar > ts-node-dev > dateformat > meow > minimist
+    - eslint-config-next > eslint-plugin-import > tsconfig-paths > json5 > minimist
+  - ts-node-dev > mkdirp > minimist@0.0.8 exists because barrel-rider-sidecar > ts-node-dev > mkdirp depends on it.
+  - tsconfig-paths > minimist@1.2.8 exists because eslint-config-next > eslint-plugin-import > tsconfig-paths depends on it.
+- The vulnerable critical paths appear to be driven by barrel-rider-sidecar's ts-node-dev dependency tree.
+- barrel-rider-sidecar is currently listed as a production dependency even though it is used by the sidecar script/dev workflow.
+
+Direct Runtime Dependencies With Advisories
+- knex
+  - Current: knex@0.21.1
+  - Reason present: direct dependency.
+  - Audit finding: high severity SQL injection vulnerability fixed in >=2.4.0.
+  - Notes: runtime dependency used by API/database code, so upgrade separately and test database workflows.
+- luxon
+  - Current: luxon@2.1.1
+  - Reason present: direct dependency.
+  - Audit finding: high severity ReDoS fixed in >=2.5.2.
+  - Notes: runtime dependency used in people date parsing, reports, and saved-time display. Safer upgrade than knex but still date-sensitive.
+- lodash
+  - Current direct/hoisted: lodash@4.17.21
+  - Reason present: direct dependency, plus knex, concurrently, google-books-search.
+  - Additional nested copy: barrel-rider-sidecar > lodash@4.17.20.
+  - Audit reports 2026 advisories recommending lodash >=4.18.0, but direct lodash 4.17.21 is the latest normal 4.x release at this baseline.
+  - Notes: validate advisory applicability and available patched versions before disruptive changes.
+- nanoid
+  - Current direct/hoisted: nanoid@3.1.30.
+  - Reason present: direct dependency.
+  - Other copies:
+    - next > postcss > nanoid@3.3.12
+    - typed-scss-modules > postcss > nanoid@3.3.7
+  - Notes: direct dependency appears unused or low-use in app code; verify before upgrade/removal.
+- uuid
+  - Current direct/hoisted: uuid@8.3.2.
+  - Reason present: direct dependency.
+  - Other copy: knex > uuid@7.0.3.
+  - Notes: direct app code uses uuid v4 through common/lib/generateId.ts. Audit finding is mostly about v3/v5/v6 buffer APIs, but direct package still reports vulnerable.
+
+Dev/Build Tooling Currently In Production Dependencies
+- barrel-rider-sidecar@1.1.8
+  - Reason present: direct dependency.
+  - Disk size with transitive dependencies: about 171 MB.
+  - Usage: package script "sidecar".
+  - Classification: dev/build tooling; candidate to move to devDependencies.
+- concurrently@6.3.0
+  - Reason present: direct dependency.
+  - Usage: package script "1" to run dev server/css watcher/sidecar together.
+  - Classification: dev tooling; candidate to move to devDependencies.
+- rimraf@3.0.2
+  - Reason present: direct dependency.
+  - Usage: package script "1" to remove .next.
+  - Classification: dev tooling; candidate to move to devDependencies.
+- typed-scss-modules@8.0.0
+  - Already in devDependencies.
+  - No move needed.
+
+Immediate Next Step
+- Move barrel-rider-sidecar, concurrently, and rimraf from dependencies to devDependencies.
+- Run yarn install.
+- Re-run yarn audit --groups dependencies.
+- Expected result: critical minimist findings should drop if they are only counted as production dependencies through barrel-rider-sidecar.
+
+Follow-Up Upgrade Steps
+- Upgrade luxon first because it is direct and has a clear patched floor.
+- Upgrade knex separately because it has major-version database behavior risk.
+- Review direct nanoid and uuid usage after knex/luxon changes.
+- Re-check lodash after dev tooling is moved; do not force a nonexistent/disruptive lodash target without validating package availability and actual app exposure.

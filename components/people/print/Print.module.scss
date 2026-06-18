@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @media print {
   .printable {
     display: block;
@@ -51,7 +53,7 @@
 .mediaMail {
   font-size: 130%;
   margin-left: 30px;
-  color: darken(red, 20%);
+  color: color.adjust(red, $lightness: -20%);
   transform: rotate(45deg);
   opacity: 1;
 }

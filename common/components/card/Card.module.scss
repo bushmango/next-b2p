@@ -1,10 +1,12 @@
+@use 'sass:color';
+
 .card {
   display: inline-block;
   background-color: #fff;
-  border: 1px solid darken(#b4dfe5, 10%);
+  border: 1px solid color.adjust(#b4dfe5, $lightness: -10%);
   border-radius: 3px;
-  // box-shadow: 2px 2px 1px darken(lightgrey, 10%);
-  box-shadow: 3px 3px 4px darken(#b4dfe5, 5%);
+  // box-shadow: 2px 2px 1px color.adjust(lightgrey, $lightness: -10%);
+  box-shadow: 3px 3px 4px color.adjust(#b4dfe5, $lightness: -5%);
   // b4dfe5
   margin: 5px;
   padding: 5px;
