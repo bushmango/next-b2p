@@ -38,7 +38,7 @@ export const EditPackages = (props: { state: IStateB2P }) => {
                   </tr>
                 )}
                 {c.Items.length === 0 && (
-                  <tr key={'no-entries'}>
+                  <tr key={'no-entries-' + c.id}>
                     <td />
                     <td />
                     <td />
@@ -170,6 +170,26 @@ export const EditPackages = (props: { state: IStateB2P }) => {
                     </React.Fragment>
                   )
                 })}
+                <tr key={'notes-' + c.id}>
+                  <td />
+                  <th
+                    className={`${cssTable.header} ${cssTable.packageNotesHeader}`}
+                    colSpan={2}
+                  >
+                    Notes
+                  </th>
+                  <td colSpan={6}>
+                    <Input
+                      value={c.Notes || ''}
+                      onChange={(newVal) => {
+                        sosB2P.updateEditPersonPackage(c.id, {
+                          Notes: newVal,
+                        })
+                      }}
+                      width='100%'
+                    />
+                  </td>
+                </tr>
               </React.Fragment>
             ))}
           </tbody>

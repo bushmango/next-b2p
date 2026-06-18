@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { registerAll } from './apiGateway'
 import { apiArguments } from './lib/apiArguments-sidecar'
-import { apiBackupDatabase } from './apiBackupDatabase-sidecar'
 
 type ActionFunction = (
   req: NextApiRequest,
@@ -32,13 +31,6 @@ export async function gateway(req: NextApiRequest, res: NextApiResponse) {
   if (!path) {
     res.status(200)
     res.send('no-path')
-    return
-  }
-
-  if (path.startsWith('backup-database')) {
-    // TODO: make sure logged in
-    console.log('backup-database hit')
-    apiBackupDatabase.runReport_backupDatabase(req, res)
     return
   }
 

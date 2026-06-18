@@ -23,7 +23,6 @@ export function registerAll() {
     '/stateRestrictions/setupAndSeed',
     apiStateRestrictions.setupAndSeed,
   )
-
   apiReports.installAll()
   apiBooks.installAll()
   apiBackupDatabase.installAll()
