@@ -1,5 +1,8 @@
 import React from 'react'
+import { Card } from '../../common/components/card/Card'
+import { B2PGiphy } from '../../common/components/giphy/B2PGiphy'
 import { b2pDebugDefs } from '../../lib/b2pDebugDefs'
+import { ClientOnly } from '../ClientOnly'
 
 const renderMotd = (message: string) => {
   return message.split(/\r?\n/).map((line, index) => (
@@ -19,6 +22,11 @@ export const MaintenancePage = () => {
   return (
     <div>
       <h1>Under Maintenance</h1>
+      <ClientOnly>
+        <Card>
+          <B2PGiphy />
+        </Card>
+      </ClientOnly>
       <p>{renderMotd(b2pDebugDefs.maintenanceMotd)}</p>
       <p>
         For questions, contact{' '}
