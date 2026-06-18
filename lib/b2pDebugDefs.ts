@@ -11,7 +11,7 @@ export const b2pDebugDefs = {
   featureFlag_allowStateRestrictionsPage: false,
   featureFlag_allowStateRestrictionsSeed: false,
   featureFlag_allowCovidReport: false,
-  featureFlag_maintenanceMode: true,
+  featureFlag_maintenanceMode: false,
   maintenanceMotd: `Books to Prisoners Database is temporarily unavailable for maintenance. 
   Maintenance is expected to be complete in the afternoon of 6/18/2024.`,
   maintenanceEmail: 'bushmango@gmail.com | stevie@steviebushman.com',
